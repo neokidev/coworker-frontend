@@ -16,6 +16,7 @@ const mockdata = [
     links: [
       { label: 'ログイン画面', link: '/login' },
       { label: 'アカウント設定', link: '/account-settings' },
+      { label: 'カート', link: '/cart' },
     ],
   },
   {
