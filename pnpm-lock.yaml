@@ -25,6 +25,7 @@ specifiers:
   '@tanstack/react-query': ^4.24.10
   '@tanstack/react-query-devtools': ^4.24.10
   '@types/humps': ^2.0.2
+  '@types/lodash': ^4.14.191
   '@types/node': 18.14.1
   '@types/react': 18.0.28
   '@types/react-dom': 18.0.11
@@ -37,6 +38,7 @@ specifiers:
   eslint-config-next: 13.1.6
   eslint-plugin-storybook: ^0.6.11
   humps: ^2.0.1
+  lodash: ^4.17.21
   mantine-datatable: ^1.8.6
   next: 13.1.6
   orval: ^6.12.0
@@ -82,6 +84,7 @@ dependencies:
   eslint: 8.34.0
   eslint-config-next: 13.1.6_7kw3g6rralp5ps6mg3uyzz6azm
   humps: 2.0.1
+  lodash: 4.17.21
   mantine-datatable: 1.8.6_f6wslqzuse266gmisw6bqkbi5a
   next: 13.1.6_biqbaboplfbrettd7655fr4n2y
   orval: 6.12.0_typescript@4.9.5
@@ -106,6 +109,7 @@ devDependencies:
   '@storybook/nextjs': 7.0.0-beta.61_pnqcpwwnf253qg4vedyb26k7xi
   '@storybook/react': 7.0.0-beta.61_ygqkwb4gg3aean7xjfdauovyqq
   '@storybook/testing-library': 0.0.14-next.1
+  '@types/lodash': 4.14.191
   css-loader: 6.7.3
   eslint-plugin-storybook: 0.6.11_7kw3g6rralp5ps6mg3uyzz6azm
   postcss-loader: 7.0.2_postcss@8.4.21

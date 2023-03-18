@@ -103,12 +103,14 @@ const Sidebar = () => {
 type MainLayoutProps = {
   title: string
   px?: number
+  miw?: number
   children: ReactNode
 }
 
 export const MainLayout: FC<MainLayoutProps> = ({
   title,
   px = 80,
+  miw,
   children,
 }) => {
   return (
@@ -118,6 +120,7 @@ export const MainLayout: FC<MainLayoutProps> = ({
       navbar={<Sidebar />}
       styles={(theme) => ({
         main: {
+          minWidth: miw,
           backgroundColor:
             theme.colorScheme === 'dark'
               ? theme.colors.dark[8]

@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Checkbox, Flex, Group, Stack, Text } from '@mantine/core'
+import { Checkbox, Group, Stack, Text, useMantineTheme } from '@mantine/core'
 import { CartProduct } from '../types'
 
 type ProductInfoProps = {
@@ -7,18 +7,23 @@ type ProductInfoProps = {
 }
 
 export const ProductInfo: FC<ProductInfoProps> = ({ product }) => {
+  const theme = useMantineTheme()
   return (
     <Group>
       <Checkbox checked={!product.isRemoved} />
       <div className="flex-1">
-        <Stack>
-          <Text>{product.name}</Text>
-          <Text>数量：{product.amount}</Text>
+        <Stack spacing="xs">
+          <Text fz="lg">{product.name}</Text>
+          <Text fz="sm">数量：{product.amount}</Text>
         </Stack>
       </div>
-      <Stack align="flex-end" justify="flex-start">
-        <Text>¥{product.price}</Text>
-        <Text>{Math.round(product.price / 100)}ポイント</Text>
+      <Stack align="flex-end" justify="flex-start" spacing="xs">
+        <Text fz="xl" fw={600}>
+          ¥{product.price}
+        </Text>
+        <Text fz="sm" color={theme.colors.red[9]}>
+          +{Math.round(product.price / 100)}ポイント
+        </Text>
       </Stack>
     </Group>
   )

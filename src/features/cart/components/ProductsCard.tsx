@@ -1,7 +1,8 @@
 import { ProductInfo } from '@/features/cart/components/ProductInfo'
 import { CartProduct } from '@/features/cart/types'
 import { FC } from 'react'
-import { Card, Divider, Group, Text } from '@mantine/core'
+import { Card, Container, Divider, Group, Text } from '@mantine/core'
+import { sumBy } from 'lodash'
 
 type ProductsCardProps = {
   products: CartProduct[]
@@ -12,18 +13,23 @@ export const ProductsCard: FC<ProductsCardProps> = ({ products }) => {
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       {products.length > 0 ? (
         <>
-          <Text>商品</Text>
+          <Text mb="xs" fw={700} fz="xl">
+            商品
+          </Text>
           <Divider />
           {products.map((product) => (
             <>
-              <ProductInfo key={product.id} product={product} />
+              <Container px={0} my="xs">
+                <ProductInfo key={product.id} product={product} />
+              </Container>
               <Divider />
             </>
           ))}
-
-          <Group position="right" spacing={0}>
+          <Group mt="xs" position="right" spacing={0}>
             <Text>小計 (税込)：</Text>
-            <Text>¥1,980</Text>
+            <Text fw={600} fz="xl">
+              ¥{sumBy(products, 'price')}
+            </Text>
           </Group>
         </>
       ) : (
