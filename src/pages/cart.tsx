@@ -1,10 +1,9 @@
 import { NextPage } from 'next'
 import { MainLayout } from '@/components/Layout'
-import { Cart } from '@/features/cart/components/Cart'
-import { CartProduct } from '@/features/cart/types'
+import { Cart, Product } from '@/features/cart'
 import { createId } from '@paralleldrive/cuid2'
 
-const products: CartProduct[] = [
+const products: Product[] = [
   {
     id: createId(),
     name: 'Item 1',
