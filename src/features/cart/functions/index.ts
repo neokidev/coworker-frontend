@@ -31,5 +31,8 @@ export const calculateTotalPoint = (products: Product[]) => {
 }
 
 export const isCartEmpty = (products: Product[]) => {
-  return products.filter((product) => product.isSelected).length === 0
+  return (
+    products.filter((product) => product.isSelected).length === 0 ||
+    calculateSubtotal(products) === 0
+  )
 }
