@@ -10,14 +10,14 @@ import {
   Stack,
 } from '@mantine/core'
 import { useFormContext } from 'react-hook-form'
+import { FormValues } from '../types'
 import {
   calculateShippingCost,
   calculateSubtotal,
   calculateTotal,
   calculateTotalPoint,
-  FormValues,
   isCartEmpty,
-} from '@/features/cart/components/Cart'
+} from '../functions'
 
 export const OrderSummaryCard: FC = () => {
   const theme = useMantineTheme()

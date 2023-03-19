@@ -1,14 +1,12 @@
 import { FC } from 'react'
 import { Flex, Group, Stack, Text, useMantineTheme } from '@mantine/core'
 import { NumberInput, Checkbox } from '@/components/Form'
-import {
-  calculatePoint,
-  ProductFormValues,
-} from '@/features/cart/components/Cart'
+import { Product } from '../types'
+import { calculatePoint } from '../functions'
 
 type ProductInfoProps = {
   index: number
-  product: ProductFormValues
+  product: Product
 }
 
 export const ProductInfo: FC<ProductInfoProps> = ({ product, index }) => {

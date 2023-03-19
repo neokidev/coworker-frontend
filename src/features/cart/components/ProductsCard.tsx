@@ -2,7 +2,8 @@ import { ProductInfo } from '@/features/cart/components/ProductInfo'
 import { FC, Fragment } from 'react'
 import { Card, Container, Divider, Group, Text } from '@mantine/core'
 import { useFormContext } from 'react-hook-form'
-import { calculateSubtotal, FormValues } from './Cart'
+import { FormValues } from '../types'
+import { calculateSubtotal } from '../functions'
 
 type ProductsCardProps = {}
 
