@@ -10,21 +10,21 @@ const products: CartProduct[] = [
     name: 'Item 1',
     price: 1000,
     quantity: 1,
-    isRemoved: false,
+    isSelected: true,
   },
   {
     id: createId(),
     name: 'Item 2',
     price: 500,
     quantity: 3,
-    isRemoved: false,
+    isSelected: false,
   },
   {
     id: createId(),
     name: 'TP-Link Bluetooth USB Bluetooth 5.0 対応 パソコン / タブレット 対応 アダプタ ブルートゥース子機 メーカー保証3年UB500',
     price: 350,
     quantity: 2,
-    isRemoved: false,
+    isSelected: true,
   },
 ]
 

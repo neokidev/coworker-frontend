@@ -3,5 +3,5 @@ export type CartProduct = {
   name: string
   price: number
   quantity: number
-  isRemoved: boolean
+  isSelected: boolean
 }

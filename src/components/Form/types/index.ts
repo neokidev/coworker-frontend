@@ -6,7 +6,7 @@ import {
   TextareaProps as MantineTextareaProps,
   TextInputProps as MantineTextInputProps,
   CheckboxGroupProps as MantineCheckboxGroupProps,
-  CheckboxProps,
+  CheckboxProps as MantineCheckboxProps,
   NumberInputProps as MantineNumberInputProps,
   MultiSelectProps as MantineMultiSelectProps,
   FileInputProps as MantineFileInputProps,
@@ -53,9 +53,10 @@ export type MultiSelectProps = Controlled<
     options: MantineMultiSelectProps['data']
   }
 >
+export type CheckboxProps = Controlled<MantineCheckboxProps>
 export type CheckboxGroupProps = Controlled<
   Omit<MantineCheckboxGroupProps, 'children'> &
-    Options<CheckboxProps> &
+    Options<MantineCheckboxProps> &
     Orientation
 >
 export type RadioGroupProps = Controlled<

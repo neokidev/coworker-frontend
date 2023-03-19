@@ -13,11 +13,11 @@ type CartProps = {
 }
 
 export type ProductFormValues = {
-  id?: string
+  id: string
   name: string
   price: number
   quantity: number
-  isRemoved: boolean
+  isSelected: boolean
 }
 
 export type FormValues = {
@@ -25,10 +25,9 @@ export type FormValues = {
 }
 
 export const calculateSubtotal = (products: ProductFormValues[]) => {
-  return products.reduce(
-    (total, product) => total + product.price * product.quantity,
-    0
-  )
+  return products
+    .filter((product) => product.isSelected)
+    .reduce((total, product) => total + product.price * product.quantity, 0)
 }
 
 export const calculateShippingCost = (products: ProductFormValues[]) => {
@@ -44,11 +43,17 @@ export const calculatePoint = (price: number) => {
 }
 
 export const calculateTotalPoint = (products: ProductFormValues[]) => {
-  return products.reduce(
-    (total, product) =>
-      total + calculatePoint(product.price) * product.quantity,
-    0
-  )
+  return products
+    .filter((product) => product.isSelected)
+    .reduce(
+      (total, product) =>
+        total + calculatePoint(product.price) * product.quantity,
+      0
+    )
+}
+
+export const isCartEmpty = (products: ProductFormValues[]) => {
+  return products.filter((product) => product.isSelected).length === 0
 }
 
 export const Cart: FC<CartProps> = ({ initialProducts }) => {

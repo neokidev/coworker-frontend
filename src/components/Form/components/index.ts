@@ -1,3 +1,4 @@
+export * from './Checkbox'
 export * from './CheckboxGroup'
 export * from './DateInput'
 export * from './FileInput'

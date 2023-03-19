@@ -1,13 +1,6 @@
 import { FC } from 'react'
-import {
-  Checkbox,
-  Flex,
-  Group,
-  Stack,
-  Text,
-  useMantineTheme,
-} from '@mantine/core'
-import { NumberInput } from '@/components/Form'
+import { Flex, Group, Stack, Text, useMantineTheme } from '@mantine/core'
+import { NumberInput, Checkbox } from '@/components/Form'
 import {
   calculatePoint,
   ProductFormValues,
@@ -23,7 +16,7 @@ export const ProductInfo: FC<ProductInfoProps> = ({ product, index }) => {
 
   return (
     <Group>
-      <Checkbox checked={!product.isRemoved} onChange={(e) => console.log(e)} />
+      <Checkbox label={undefined} name={`products.${index}.isSelected`} />
       <div className="flex-1">
         <Stack spacing={4}>
           <Flex gap="xs">
