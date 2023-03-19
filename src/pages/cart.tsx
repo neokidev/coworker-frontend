@@ -9,21 +9,21 @@ const products: CartProduct[] = [
     id: createId(),
     name: 'Item 1',
     price: 1000,
-    amount: 1,
+    quantity: 1,
     isRemoved: false,
   },
   {
     id: createId(),
     name: 'Item 2',
     price: 500,
-    amount: 3,
+    quantity: 3,
     isRemoved: false,
   },
   {
     id: createId(),
-    name: 'Item 3',
+    name: 'TP-Link Bluetooth USB Bluetooth 5.0 対応 パソコン / タブレット 対応 アダプタ ブルートゥース子機 メーカー保証3年UB500',
     price: 350,
-    amount: 2,
+    quantity: 2,
     isRemoved: false,
   },
 ]
@@ -31,7 +31,7 @@ const products: CartProduct[] = [
 const CartPage: NextPage = () => {
   return (
     <MainLayout title="カート" miw={1280}>
-      <Cart products={products} />
+      <Cart initialProducts={products} />
     </MainLayout>
   )
 }

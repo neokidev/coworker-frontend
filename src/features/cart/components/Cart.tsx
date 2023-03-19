@@ -1,20 +1,75 @@
 import { FC } from 'react'
 import { OrderSummaryCard } from './OrderSummaryCard'
-import { Group, Text } from '@mantine/core'
+import { Group } from '@mantine/core'
 import { ProductsCard } from '@/features/cart/components/ProductsCard'
 import { CartProduct } from '@/features/cart/types'
+import { useForm } from '@/components/Form'
+import { sumBy } from 'lodash'
+
+const DEFAULT_SHIPPING_COST = 340
 
 type CartProps = {
-  products: CartProduct[]
+  initialProducts: CartProduct[]
 }
 
-export const Cart: FC<CartProps> = ({ products }) => {
+export type ProductFormValues = {
+  id?: string
+  name: string
+  price: number
+  quantity: number
+  isRemoved: boolean
+}
+
+export type FormValues = {
+  products: ProductFormValues[]
+}
+
+export const calculateSubtotal = (products: ProductFormValues[]) => {
+  return products.reduce(
+    (total, product) => total + product.price * product.quantity,
+    0
+  )
+}
+
+export const calculateShippingCost = (products: ProductFormValues[]) => {
+  return calculateSubtotal(products) < 5000 ? DEFAULT_SHIPPING_COST : 0
+}
+
+export const calculateTotal = (subtotal: number, shippingCost: number) => {
+  return subtotal + shippingCost
+}
+
+export const calculatePoint = (price: number) => {
+  return Math.round(price / 100)
+}
+
+export const calculateTotalPoint = (products: ProductFormValues[]) => {
+  return products.reduce(
+    (total, product) =>
+      total + calculatePoint(product.price) * product.quantity,
+    0
+  )
+}
+
+export const Cart: FC<CartProps> = ({ initialProducts }) => {
+  const [Form] = useForm<FormValues>({
+    defaultValues: {
+      products: initialProducts,
+    },
+    mode: 'onTouched',
+    onSubmit: (data) => {
+      console.log(data)
+    },
+  })
+
   return (
-    <Group align="start">
-      <div className="flex-1">
-        <ProductsCard products={products} />
-      </div>
-      <OrderSummaryCard />
-    </Group>
+    <Form>
+      <Group align="start">
+        <div className="flex-1">
+          <ProductsCard />
+        </div>
+        <OrderSummaryCard />
+      </Group>
+    </Form>
   )
 }

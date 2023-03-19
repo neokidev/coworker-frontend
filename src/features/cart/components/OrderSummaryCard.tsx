@@ -1,18 +1,28 @@
 import { FC } from 'react'
 import {
-  Badge,
   Button,
   Card,
   Group,
   Text,
-  Image,
   Divider,
   Container,
   useMantineTheme,
 } from '@mantine/core'
+import { useFormContext } from 'react-hook-form'
+import {
+  calculateShippingCost,
+  calculateSubtotal,
+  calculateTotal,
+  calculateTotalPoint,
+  FormValues,
+} from '@/features/cart/components/Cart'
 
 export const OrderSummaryCard: FC = () => {
   const theme = useMantineTheme()
+  const { watch } = useFormContext<FormValues>()
+  const products = watch('products')
+  const subtotal = calculateSubtotal(products)
+  const shippingCost = calculateShippingCost(products)
 
   return (
     <Card w={280} shadow="sm" padding="lg" radius="md" withBorder>
@@ -25,11 +35,11 @@ export const OrderSummaryCard: FC = () => {
         <Text size="sm">
           <Group>
             <div className="flex-1">商品の小計：</div>
-            ¥3,100
+            <Text>¥{subtotal}</Text>
           </Group>
           <Group>
-            <div className="flex-1">配送料・手数料：</div>
-            ¥0
+            <div className="flex-1">配送料：</div>
+            <Text>¥{shippingCost}</Text>
           </Group>
         </Text>
       </Container>
@@ -38,7 +48,7 @@ export const OrderSummaryCard: FC = () => {
         <Text weight={700} size="xl" color={theme.colors.red[9]}>
           <Group>
             <div className="flex-1">ご請求額：</div>
-            ¥3,100
+            <Text>¥{calculateTotal(subtotal, shippingCost)}</Text>
           </Group>
         </Text>
       </Container>
@@ -48,7 +58,7 @@ export const OrderSummaryCard: FC = () => {
           <Group>
             <div className="flex-1">獲得ポイント：</div>
             <Text weight={700} color={theme.colors.red[9]}>
-              +31ポイント
+              +{calculateTotalPoint(products)}ポイント
             </Text>
           </Group>
         </Text>

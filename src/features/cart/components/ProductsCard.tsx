@@ -1,14 +1,15 @@
 import { ProductInfo } from '@/features/cart/components/ProductInfo'
-import { CartProduct } from '@/features/cart/types'
-import { FC } from 'react'
+import { FC, Fragment } from 'react'
 import { Card, Container, Divider, Group, Text } from '@mantine/core'
-import { sumBy } from 'lodash'
+import { useFormContext } from 'react-hook-form'
+import { calculateSubtotal, FormValues } from './Cart'
 
-type ProductsCardProps = {
-  products: CartProduct[]
-}
+type ProductsCardProps = {}
 
-export const ProductsCard: FC<ProductsCardProps> = ({ products }) => {
+export const ProductsCard: FC<ProductsCardProps> = () => {
+  const { watch } = useFormContext<FormValues>()
+  const products = watch('products')
+
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       {products.length > 0 ? (
@@ -17,18 +18,18 @@ export const ProductsCard: FC<ProductsCardProps> = ({ products }) => {
             商品
           </Text>
           <Divider />
-          {products.map((product) => (
-            <>
+          {products.map((product, index) => (
+            <Fragment key={product.id}>
               <Container px={0} my="xs">
-                <ProductInfo key={product.id} product={product} />
+                <ProductInfo index={index} product={product} />
               </Container>
               <Divider />
-            </>
+            </Fragment>
           ))}
           <Group mt="xs" position="right" spacing={0}>
             <Text>小計 (税込)：</Text>
             <Text fw={600} fz="xl">
-              ¥{sumBy(products, 'price')}
+              ¥{calculateSubtotal(products)}
             </Text>
           </Group>
         </>
