@@ -29,7 +29,7 @@ export const ProductsCard: FC<ProductsCardProps> = () => {
           <Group mt="xs" position="right" spacing={0}>
             <Text>小計 (税込)：</Text>
             <Text fw={600} fz="xl">
-              ¥{calculateSubtotal(products)}
+              ¥{calculateSubtotal(products).toLocaleString()}
             </Text>
           </Group>
         </>

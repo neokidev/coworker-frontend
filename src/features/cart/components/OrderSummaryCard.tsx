@@ -46,11 +46,11 @@ export const OrderSummaryCard: FC = () => {
             <Text size="sm">
               <Group>
                 <div className="flex-1">商品の小計：</div>
-                <Text>¥{subtotal}</Text>
+                <Text>¥{subtotal.toLocaleString()}</Text>
               </Group>
               <Group>
                 <div className="flex-1">配送料：</div>
-                <Text>¥{shippingCost}</Text>
+                <Text>¥{shippingCost.toLocaleString()}</Text>
               </Group>
             </Text>
           </Container>
@@ -59,7 +59,9 @@ export const OrderSummaryCard: FC = () => {
             <Text weight={700} size="xl" color={theme.colors.red[9]}>
               <Group>
                 <div className="flex-1">ご請求額：</div>
-                <Text>¥{calculateTotal(subtotal, shippingCost)}</Text>
+                <Text>
+                  ¥{calculateTotal(subtotal, shippingCost).toLocaleString()}
+                </Text>
               </Group>
             </Text>
           </Container>
@@ -69,7 +71,7 @@ export const OrderSummaryCard: FC = () => {
               <Group>
                 <div className="flex-1">獲得ポイント：</div>
                 <Text weight={700} color={theme.colors.red[9]}>
-                  +{calculateTotalPoint(products)}ポイント
+                  +{calculateTotalPoint(products).toLocaleString()}ポイント
                 </Text>
               </Group>
             </Text>

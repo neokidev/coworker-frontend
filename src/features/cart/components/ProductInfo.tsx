@@ -25,10 +25,10 @@ export const ProductInfo: FC<ProductInfoProps> = ({ product, index }) => {
             </div>
             <Stack align="flex-end" justify="flex-start" spacing={0}>
               <Text fz="xl" fw={600}>
-                ¥{product.price}
+                ¥{product.price.toLocaleString()}
               </Text>
               <Text fz="xs" color={theme.colors.red[9]}>
-                +{calculatePoint(product.price)}ポイント
+                +{calculatePoint(product.price).toLocaleString()}ポイント
               </Text>
             </Stack>
           </Flex>
