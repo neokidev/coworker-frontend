@@ -21,9 +21,7 @@ export const ProductsCard: FC<ProductsCardProps> = () => {
           <Divider />
           {products.map((product, index) => (
             <Fragment key={product.id}>
-              <Container px={0} my="xs">
-                <ProductInfo index={index} product={product} />
-              </Container>
+              <ProductInfo index={index} product={product} />
               <Divider />
             </Fragment>
           ))}

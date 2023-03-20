@@ -6,7 +6,7 @@ import {
   BoxProps,
 } from '@mantine/core'
 import { useId } from '@mantine/hooks'
-import React, { FC, ReactNode } from 'react'
+import React, { FC, ReactNode, useMemo } from 'react'
 import {
   useForm as useHookForm,
   FormProvider,
@@ -52,31 +52,38 @@ export const useForm = <
     ...rest,
   })
 
-  const Form: FC<
-    {
-      children?: ReactNode
-      grid?: Omit<GridProps, 'children'>
-    } & Omit<BoxProps, 'children'>
-  > & { SubmitButton: FC<ButtonProps> } = ({ children, grid, ...rest }) => {
-    return (
-      <FormProvider {...methods}>
-        <form id={id} onSubmit={methods.handleSubmit(onSubmit, onSubmitError)}>
-          {children}
-        </form>
-      </FormProvider>
+  const Form = useMemo(() => {
+    const Form: FC<
+      {
+        children?: ReactNode
+        grid?: Omit<GridProps, 'children'>
+      } & Omit<BoxProps, 'children'>
+    > & { SubmitButton: FC<ButtonProps> } = ({ children, grid, ...rest }) => {
+      return (
+        <FormProvider {...methods}>
+          <form
+            id={id}
+            onSubmit={methods.handleSubmit(onSubmit, onSubmitError)}
+          >
+            {children}
+          </form>
+        </FormProvider>
+      )
+    }
+
+    const SubmitButton: FC<ButtonProps> = (props) => (
+      <Button
+        type="submit"
+        form={id}
+        loaderProps={{ color: theme.colors.blue[5] }}
+        {...props}
+      />
     )
-  }
 
-  const SubmitButton: FC<ButtonProps> = (props) => (
-    <Button
-      type="submit"
-      form={id}
-      loaderProps={{ color: theme.colors.blue[5] }}
-      {...props}
-    />
-  )
+    Form.SubmitButton = SubmitButton
 
-  Form.SubmitButton = SubmitButton
+    return Form
+  }, [])
 
   return [Form, methods] as const
 }

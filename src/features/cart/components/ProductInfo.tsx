@@ -13,7 +13,7 @@ export const ProductInfo: FC<ProductInfoProps> = ({ product, index }) => {
   const theme = useMantineTheme()
 
   return (
-    <Group>
+    <Group my="sm">
       <Checkbox label={undefined} name={`products.${index}.isSelected`} />
       <div className="flex-1">
         <Stack spacing={4}>

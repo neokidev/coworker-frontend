@@ -29,7 +29,7 @@ const products: Product[] = [
 
 const CartPage: NextPage = () => {
   return (
-    <MainLayout title="カート" miw={1280}>
+    <MainLayout title="カート" maw={1400} miw={1400}>
       <Cart initialProducts={products} />
     </MainLayout>
   )

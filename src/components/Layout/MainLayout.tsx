@@ -103,6 +103,7 @@ const Sidebar = () => {
 type MainLayoutProps = {
   title: string
   px?: number
+  maw?: number
   miw?: number
   children: ReactNode
 }
@@ -110,6 +111,7 @@ type MainLayoutProps = {
 export const MainLayout: FC<MainLayoutProps> = ({
   title,
   px = 80,
+  maw,
   miw,
   children,
 }) => {
@@ -129,7 +131,13 @@ export const MainLayout: FC<MainLayoutProps> = ({
       })}
     >
       <main>
-        <Box mx="auto" px={px}>
+        <Box
+          mx="auto"
+          px={px}
+          sx={(theme) => ({
+            maxWidth: maw,
+          })}
+        >
           <Title order={2} my={16}>
             {title}
           </Title>
