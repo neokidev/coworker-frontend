@@ -115,6 +115,10 @@ export const TableSettings = <TData,>({
         <DisplayColumnList table={table} />
       </Stack>
       <Divider />
+      <Text fz="xs" c="dimmed" px={8}>
+        選択した列を削除
+      </Text>
+      <Divider />
       <Stack>
         <Button variant="light" radius="md" mx={4} p={4}>
           CSVダウンロード

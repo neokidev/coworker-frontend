@@ -50,6 +50,11 @@ const Wrapper: FC = () => {
   }, [pagination])
 
   const handleSearch = useCallback((query: string) => alert(query), [])
+  const handleDeleteSelection = useCallback(
+    (selection: string[]) =>
+      setData((data) => data.filter((item) => !selection.includes(item.id))),
+    []
+  )
 
   return (
     <Table
@@ -59,6 +64,7 @@ const Wrapper: FC = () => {
       pagination={pagination}
       pageSizeOptions={[10, 20, 30]}
       onPaginationChange={setPagination}
+      onDeleteSelection={handleDeleteSelection}
       onSearch={handleSearch}
       tableViewportHeight={300}
     />

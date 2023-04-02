@@ -22,23 +22,29 @@ import {
   Select,
   Popover,
   Pagination as MantinePagination,
+  Menu,
 } from '@mantine/core'
 import {
   FC,
   MouseEventHandler,
   ReactNode,
+  useCallback,
   useLayoutEffect,
   useMemo,
   useState,
 } from 'react'
 import {
   IconAdjustments,
+  IconArrowsLeftRight,
   IconDotsVertical,
+  IconMessageCircle,
+  IconPhoto,
   IconSearch,
   IconSelector,
+  IconSettings,
 } from '@tabler/icons-react'
 import { HasIdObject } from '@/types/types'
-import { IconChevronDown, IconChevronUp } from '@tabler/icons'
+import { IconChevronDown, IconChevronUp, IconTrash } from '@tabler/icons'
 import { TableSettings } from '@/components/Table/TableSettings'
 import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
@@ -91,6 +97,10 @@ export const useStyles = createStyles((theme) => ({
     width: rem(21),
     height: rem(21),
     borderRadius: rem(21),
+  },
+
+  showColumnMenuItem: {
+    cursor: 'default',
   },
 
   checkbox: {
@@ -220,6 +230,7 @@ export type TableProps<TData extends HasIdObject> = {
   pageSizeOptions: number[]
   onPaginationChange?: (pagination: Pagination) => void
   onSearch?: (query: string) => void
+  onDeleteSelection?: (selection: string[]) => void
   tableViewportHeight?: number
 }
 
@@ -231,6 +242,7 @@ export const Table = <TData extends HasIdObject>({
   pageSizeOptions,
   onPaginationChange,
   onSearch,
+  onDeleteSelection,
   tableViewportHeight,
 }: TableProps<TData>): JSX.Element => {
   const pageCount = Math.ceil(totalCount / pagination.pageSize)
@@ -279,6 +291,10 @@ export const Table = <TData extends HasIdObject>({
     setSelection((current) =>
       current.length === data.length ? [] : data.map((item) => item.id)
     )
+
+  const handleDeleteSelection = useCallback(() => {
+    onDeleteSelection?.(selection)
+  }, [onDeleteSelection, selection])
 
   const columnHelper = createColumnHelper<TData>()
   const transformedColumns = columns.map(({ key, header, render }) => {
@@ -366,23 +382,43 @@ export const Table = <TData extends HasIdObject>({
             <UnstyledButton className={classes.iconButton}>
               <IconAdjustments size="1.25rem" />
             </UnstyledButton>
-            <Popover
-              width={200}
-              position="bottom"
-              withArrow
-              shadow="md"
-              arrowSize={0}
-              radius="md"
-            >
-              <Popover.Target>
+            <Menu shadow="md" radius="md" width={200}>
+              <Menu.Target>
                 <UnstyledButton className={classes.iconButton}>
                   <IconDotsVertical size="1.25rem" />
                 </UnstyledButton>
-              </Popover.Target>
-              <Popover.Dropdown px={6}>
-                <TableSettings table={table} />
-              </Popover.Dropdown>
-            </Popover>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Label pt="sm">表示する列</Menu.Label>
+                {table.getAllLeafColumns().map((column) => (
+                  <Menu.Item
+                    className={classes.showColumnMenuItem}
+                    key={column.id}
+                    closeMenuOnClick={false}
+                  >
+                    <Group spacing="sm">
+                      <Checkbox
+                        className={classes.checkbox}
+                        checked={column.getIsVisible()}
+                        onChange={column.getToggleVisibilityHandler()}
+                      />
+                      <Text fz="sm">{column.columnDef.header as string}</Text>
+                    </Group>
+                  </Menu.Item>
+                ))}
+
+                <Menu.Divider />
+
+                <Menu.Item
+                  color="red"
+                  icon={<IconTrash size={14} />}
+                  onClick={handleDeleteSelection}
+                >
+                  選択した列を削除
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           </Group>
         </div>
         <SimpleBar
