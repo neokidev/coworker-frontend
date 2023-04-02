@@ -23,6 +23,7 @@ import {
   Popover,
   Pagination as MantinePagination,
   Menu,
+  Button,
 } from '@mantine/core'
 import {
   FC,
@@ -44,7 +45,12 @@ import {
   IconSettings,
 } from '@tabler/icons-react'
 import { HasIdObject } from '@/types/types'
-import { IconChevronDown, IconChevronUp, IconTrash } from '@tabler/icons'
+import {
+  IconChevronDown,
+  IconChevronUp,
+  IconPlus,
+  IconTrash,
+} from '@tabler/icons'
 import { TableSettings } from '@/components/Table/TableSettings'
 import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
@@ -118,6 +124,11 @@ export const useStyles = createStyles((theme) => ({
   },
 
   button: {
+    borderRadius: '0.5rem',
+    height: '2.25rem',
+  },
+
+  addButton: {
     borderRadius: '0.5rem',
     height: '2.25rem',
   },
@@ -230,6 +241,7 @@ export type TableProps<TData extends HasIdObject> = {
   pageSizeOptions: number[]
   onPaginationChange?: (pagination: Pagination) => void
   onSearch?: (query: string) => void
+  onAddItem?: () => void
   onDeleteSelection?: (selection: string[]) => void
   tableViewportHeight?: number
 }
@@ -242,6 +254,7 @@ export const Table = <TData extends HasIdObject>({
   pageSizeOptions,
   onPaginationChange,
   onSearch,
+  onAddItem,
   onDeleteSelection,
   tableViewportHeight,
 }: TableProps<TData>): JSX.Element => {
@@ -291,6 +304,10 @@ export const Table = <TData extends HasIdObject>({
     setSelection((current) =>
       current.length === data.length ? [] : data.map((item) => item.id)
     )
+
+  const handleAddItem = useCallback(() => {
+    onAddItem?.()
+  }, [onAddItem])
 
   const handleDeleteSelection = useCallback(() => {
     onDeleteSelection?.(selection)
@@ -360,6 +377,13 @@ export const Table = <TData extends HasIdObject>({
             </Stack>
           </Group>
           <Group spacing="xs">
+            <Button
+              className={classes.addButton}
+              leftIcon={<IconPlus size="1rem" />}
+              onClick={handleAddItem}
+            >
+              追加
+            </Button>
             <TextInput
               value={searchQuery}
               className={classes.input + ' ring-0 outline-0'}
