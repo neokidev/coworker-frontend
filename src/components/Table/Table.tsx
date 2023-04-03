@@ -16,42 +16,22 @@ import {
   UnstyledButton,
   Center,
   Checkbox,
-  TextInput,
   Title,
   Stack,
   Select,
-  Popover,
   Pagination as MantinePagination,
-  Menu,
-  Button,
 } from '@mantine/core'
 import {
   FC,
   MouseEventHandler,
   ReactNode,
-  useCallback,
   useLayoutEffect,
   useMemo,
   useState,
 } from 'react'
-import {
-  IconAdjustments,
-  IconArrowsLeftRight,
-  IconDotsVertical,
-  IconMessageCircle,
-  IconPhoto,
-  IconSearch,
-  IconSelector,
-  IconSettings,
-} from '@tabler/icons-react'
+import { IconSelector } from '@tabler/icons-react'
 import { HasIdObject } from '@/types/types'
-import {
-  IconChevronDown,
-  IconChevronUp,
-  IconPlus,
-  IconTrash,
-} from '@tabler/icons'
-import { TableSettings } from '@/components/Table/TableSettings'
+import { IconChevronDown, IconChevronUp } from '@tabler/icons'
 import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
 import { useEventListenerRef } from 'rooks'
@@ -240,9 +220,8 @@ export type TableProps<TData extends HasIdObject> = {
   pagination: Pagination
   pageSizeOptions: number[]
   onPaginationChange?: (pagination: Pagination) => void
-  onSearch?: (query: string) => void
-  onAddItem?: () => void
-  onDeleteSelection?: (selection: string[]) => void
+  onSelectionChange?: (selection: string[]) => void
+  headerMenus?: JSX.Element[]
   tableViewportHeight?: number
 }
 
@@ -253,9 +232,8 @@ export const Table = <TData extends HasIdObject>({
   pagination,
   pageSizeOptions,
   onPaginationChange,
-  onSearch,
-  onAddItem,
-  onDeleteSelection,
+  onSelectionChange,
+  headerMenus,
   tableViewportHeight,
 }: TableProps<TData>): JSX.Element => {
   const pageCount = Math.ceil(totalCount / pagination.pageSize)
@@ -274,7 +252,6 @@ export const Table = <TData extends HasIdObject>({
   const { page, pageSize } = pagination
   const pageIndex = page - 1
   const [scrolled, setScrolled] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
   const [selection, setSelection] = useState<string[]>([])
   const [columnVisibility, setColumnVisibility] = useState({})
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
@@ -305,13 +282,10 @@ export const Table = <TData extends HasIdObject>({
       current.length === data.length ? [] : data.map((item) => item.id)
     )
 
-  const handleAddItem = useCallback(() => {
-    onAddItem?.()
-  }, [onAddItem])
-
-  const handleDeleteSelection = useCallback(() => {
-    onDeleteSelection?.(selection)
-  }, [onDeleteSelection, selection])
+  useLayoutEffect(() => {
+    onSelectionChange?.(selection)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selection])
 
   const columnHelper = createColumnHelper<TData>()
   const transformedColumns = columns.map(({ key, header, render }) => {
@@ -376,74 +350,7 @@ export const Table = <TData extends HasIdObject>({
               </Text>
             </Stack>
           </Group>
-          <Group spacing="xs">
-            <Button
-              className={classes.addButton}
-              leftIcon={<IconPlus size="1rem" />}
-              onClick={handleAddItem}
-            >
-              追加
-            </Button>
-            <TextInput
-              value={searchQuery}
-              className={classes.input + ' ring-0 outline-0'}
-              placeholder="検索..."
-              rightSection={
-                <UnstyledButton
-                  className={classes.searchButton}
-                  onClick={() => onSearch && onSearch(searchQuery)}
-                >
-                  <IconSearch size="1rem" />
-                </UnstyledButton>
-              }
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  onSearch && onSearch(searchQuery)
-                }
-              }}
-            />
-            <UnstyledButton className={classes.iconButton}>
-              <IconAdjustments size="1.25rem" />
-            </UnstyledButton>
-            <Menu shadow="md" radius="md" width={200}>
-              <Menu.Target>
-                <UnstyledButton className={classes.iconButton}>
-                  <IconDotsVertical size="1.25rem" />
-                </UnstyledButton>
-              </Menu.Target>
-
-              <Menu.Dropdown>
-                <Menu.Label pt="sm">表示する列</Menu.Label>
-                {table.getAllLeafColumns().map((column) => (
-                  <Menu.Item
-                    className={classes.showColumnMenuItem}
-                    key={column.id}
-                    closeMenuOnClick={false}
-                  >
-                    <Group spacing="sm">
-                      <Checkbox
-                        className={classes.checkbox}
-                        checked={column.getIsVisible()}
-                        onChange={column.getToggleVisibilityHandler()}
-                      />
-                      <Text fz="sm">{column.columnDef.header as string}</Text>
-                    </Group>
-                  </Menu.Item>
-                ))}
-
-                <Menu.Divider />
-
-                <Menu.Item
-                  color="red"
-                  icon={<IconTrash size={14} />}
-                  onClick={handleDeleteSelection}
-                >
-                  選択した列を削除
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          </Group>
+          <Group spacing="xs">{headerMenus}</Group>
         </div>
         <SimpleBar
           scrollableNodeProps={{ ref: tableViewportRef }}
@@ -502,7 +409,7 @@ export const Table = <TData extends HasIdObject>({
                 rows
               ) : (
                 <tr>
-                  <td colSpan={Object.keys(data[0]).length}>
+                  <td>
                     <Text weight={500} align="center">
                       Nothing found
                     </Text>
