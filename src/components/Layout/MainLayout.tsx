@@ -16,6 +16,7 @@ const mockdata = [
     links: [
       { label: 'ログイン画面', link: '/login' },
       { label: 'アカウント設定', link: '/account-settings' },
+      { label: 'カート', link: '/cart' },
     ],
   },
   {
@@ -102,12 +103,16 @@ const Sidebar = () => {
 type MainLayoutProps = {
   title: string
   px?: number
+  maw?: number
+  miw?: number
   children: ReactNode
 }
 
 export const MainLayout: FC<MainLayoutProps> = ({
   title,
   px = 80,
+  maw,
+  miw,
   children,
 }) => {
   return (
@@ -117,6 +122,7 @@ export const MainLayout: FC<MainLayoutProps> = ({
       navbar={<Sidebar />}
       styles={(theme) => ({
         main: {
+          minWidth: miw,
           backgroundColor:
             theme.colorScheme === 'dark'
               ? theme.colors.dark[8]
@@ -125,7 +131,13 @@ export const MainLayout: FC<MainLayoutProps> = ({
       })}
     >
       <main>
-        <Box mx="auto" px={px}>
+        <Box
+          mx="auto"
+          px={px}
+          sx={(theme) => ({
+            maxWidth: maw,
+          })}
+        >
           <Title order={2} my={16}>
             {title}
           </Title>
