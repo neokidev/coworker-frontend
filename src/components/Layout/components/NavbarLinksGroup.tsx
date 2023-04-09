@@ -6,8 +6,13 @@ import {
   ThemeIcon,
   UnstyledButton,
   createStyles,
+  rem,
 } from '@mantine/core'
-import { TablerIcon, IconChevronLeft, IconChevronRight } from '@tabler/icons'
+import {
+  IconCalendarStats,
+  IconChevronLeft,
+  IconChevronRight,
+} from '@tabler/icons-react'
 import Link from 'next/link'
 
 const useStyles = createStyles((theme) => ({
@@ -15,11 +20,8 @@ const useStyles = createStyles((theme) => ({
     fontWeight: 500,
     display: 'block',
     width: '100%',
-    padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
-    color:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[0]
-        : theme.colors.gray[7],
+    padding: `${theme.spacing.xs} ${theme.spacing.md}`,
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
     fontSize: theme.fontSizes.sm,
 
     '&:hover': {
@@ -27,6 +29,7 @@ const useStyles = createStyles((theme) => ({
         theme.colorScheme === 'dark'
           ? theme.colors.dark[7]
           : theme.colors.gray[0],
+      color: theme.colorScheme === 'dark' ? theme.white : theme.black,
     },
   },
 
@@ -34,15 +37,15 @@ const useStyles = createStyles((theme) => ({
     fontWeight: 500,
     display: 'block',
     textDecoration: 'none',
-    padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
-    paddingLeft: 31,
-    marginLeft: 30,
+    padding: `${theme.spacing.xs} ${theme.spacing.md}`,
+    paddingLeft: rem(31),
+    marginLeft: rem(30),
     fontSize: theme.fontSizes.sm,
     color:
       theme.colorScheme === 'dark'
         ? theme.colors.dark[0]
         : theme.colors.gray[7],
-    borderLeft: `1px solid ${
+    borderLeft: `${rem(1)} solid ${
       theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
     }`,
 
@@ -51,6 +54,7 @@ const useStyles = createStyles((theme) => ({
         theme.colorScheme === 'dark'
           ? theme.colors.dark[7]
           : theme.colors.gray[0],
+      color: theme.colorScheme === 'dark' ? theme.white : theme.black,
     },
   },
 
@@ -60,7 +64,7 @@ const useStyles = createStyles((theme) => ({
 }))
 
 interface LinksGroupProps {
-  icon: TablerIcon
+  icon: React.FC<any>
   label: string
   initiallyOpened?: boolean
   links?: { label: string; link: string }[]
@@ -77,7 +81,7 @@ export function LinksGroup({
   const [opened, setOpened] = useState(initiallyOpened || false)
   const ChevronIcon = theme.dir === 'ltr' ? IconChevronRight : IconChevronLeft
   const items = (hasLinks ? links : []).map((link) => (
-    <Link key={link.label} className={classes.link} href={link.link}>
+    <Link key={link.label} href={link.link} className={classes.link}>
       {link.label}
     </Link>
   ))
@@ -91,14 +95,14 @@ export function LinksGroup({
         <Group position="apart" spacing={0}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <ThemeIcon variant="light" size={30}>
-              <Icon size={18} />
+              <Icon size="1.1rem" />
             </ThemeIcon>
             <Box ml="md">{label}</Box>
           </Box>
           {hasLinks && (
             <ChevronIcon
               className={classes.chevron}
-              size={14}
+              size="1rem"
               stroke={1.5}
               style={{
                 transform: opened
