@@ -18,7 +18,8 @@ export const CreateModal: FC<Props> = ({ isOpen, setIsOpen, createMember }) => {
   }, [setIsOpen])
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    createMember(data)
+    const id = uuidv4()
+    createMember({ id, ...data })
     close()
   }
 
@@ -26,12 +27,15 @@ export const CreateModal: FC<Props> = ({ isOpen, setIsOpen, createMember }) => {
     <Modal
       opened={isOpen}
       onClose={close}
-      title={<Title order={4}>メンバー追加</Title>}
+      title={
+        <Text fz="lg" fw={700}>
+          メンバー追加
+        </Text>
+      }
       size="lg"
     >
       <MemberForm
         initialValues={{
-          id: uuidv4(),
           firstName: '',
           lastName: '',
           email: '',

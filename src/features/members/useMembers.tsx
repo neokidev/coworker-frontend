@@ -1,5 +1,5 @@
 import {
-  getGetMembersQueryKey,
+  useGetMembersId as useGetMemberQuery,
   useGetMembers as useGetMembersQuery,
 } from '@/api/endpoints/members/members'
 import { useDeleteMembers as useDeleteMembersMutation } from '@/api/endpoints/members/members'
@@ -10,6 +10,7 @@ import {
   ApiCreateMemberRequest,
   ApiListMembersResponse,
   ApiListMembersResponseMeta,
+  ApiMemberResponse,
   ApiUpdateMemberRequestBody,
 } from '@/api/model'
 import { AxiosResponse } from 'axios'
@@ -20,39 +21,61 @@ import { DeepRequired } from 'ts-essentials'
 
 export interface Member {
   id: string
+  firstName: string
+  lastName: string
   fullName: string
   email: string
   dateAdded: Date
 }
 
-export interface QueryResultData {
+export interface ListQueryResultData {
   meta: Camelized<Required<ApiListMembersResponseMeta>>
   data: Member[]
 }
 
 const transformer = (
+  member: Camelized<DeepRequired<ApiMemberResponse>>
+): Member => {
+  const { id, firstName, lastName, email, createdAt } = member
+
+  return {
+    id: id,
+    firstName: firstName,
+    lastName: lastName,
+    fullName: `${firstName} ${lastName}`,
+    email: email,
+    dateAdded: new Date(createdAt),
+  }
+}
+
+const useGetMembersTransformer = (
   response: AxiosResponse<Camelized<DeepRequired<ApiListMembersResponse>>, any>
-): QueryResultData => {
+): ListQueryResultData => {
   return {
     meta: response.data.meta,
-    data: response.data.data.map(
-      ({ id, firstName, lastName, email, createdAt }) => {
-        return {
-          id: id,
-          fullName: `${firstName} ${lastName}`,
-          email: email,
-          dateAdded: new Date(createdAt),
-        }
-      }
-    ),
+    data: response.data.data.map((item) => {
+      return transformer(item)
+    }),
   }
 }
 
 export const useGetMembers = (page: number, pageSize: number) => {
-  return useGetMembersQuery<QueryResultData>(
+  return useGetMembersQuery<ListQueryResultData>(
     { page_id: page, page_size: pageSize },
-    { query: { select: transformer, keepPreviousData: true } }
+    { query: { select: useGetMembersTransformer, keepPreviousData: true } }
   )
+}
+
+const useGetMemberTransformer = (
+  response: AxiosResponse<Camelized<DeepRequired<ApiMemberResponse>>, any>
+): Member => {
+  return transformer(response.data)
+}
+
+export const useGetMember = (id: string) => {
+  return useGetMemberQuery<Member>(id, {
+    query: { select: useGetMemberTransformer },
+  })
 }
 
 export const useCreateMember = (onSuccess?: () => void) => {

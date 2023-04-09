@@ -5,7 +5,6 @@ import { Button, Group, Modal, TextInput } from '@mantine/core'
 import { z } from 'zod'
 
 const schema = z.object({
-  id: z.string().uuid(),
   firstName: z
     .string()
     .min(2, { message: 'First name should have at 2 letters' }),
@@ -21,7 +20,6 @@ const schema = z.object({
 })
 
 export type FormValues = {
-  id: string
   firstName: string
   lastName: string
   email: string

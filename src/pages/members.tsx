@@ -19,10 +19,12 @@ import { CreateModal } from '@/features/members/CreateModal'
 import { IconPlus } from '@tabler/icons'
 import { getGetMembersQueryKey } from '@/api/endpoints/members/members'
 import { useQueryClient } from '@tanstack/react-query'
+import { useRouter } from 'next/router'
 
 const PAGE_SIZES = [5, 10]
 
 function Table() {
+  const router = useRouter()
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(PAGE_SIZES[1])
   const { data, isLoading } = useGetMembers(page, pageSize)
@@ -125,7 +127,7 @@ function Table() {
                 icon: <IconEdit size={14} />,
                 title: `Edit`,
                 onClick: () => {
-                  console.log('edit')
+                  router.push(`/members/${row.id}/edit`)
                 },
               },
               {
