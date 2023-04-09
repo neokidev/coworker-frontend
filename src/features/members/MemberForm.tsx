@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button, Group, Modal, TextInput } from '@mantine/core'
+import { Button, Group, TextInput } from '@mantine/core'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -34,14 +34,11 @@ export const MemberForm: FC<Props> = ({ initialValues, onSubmit }) => {
   const {
     control,
     handleSubmit,
-    getValues,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: initialValues,
   })
-  console.log('initialValues:', initialValues)
-  console.log('getValues:', getValues())
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

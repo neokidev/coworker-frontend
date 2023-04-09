@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import { DataTable } from 'mantine-datatable'
 import dayjs from 'dayjs'
-import { Box, Button, Group, Skeleton } from '@mantine/core'
-import { IconEdit, IconTrash, IconTrashX } from '@tabler/icons-react'
+import { Button, Group, Skeleton } from '@mantine/core'
 import {
   Member,
   useCreateMember,
@@ -15,6 +13,7 @@ import { IconPlus } from '@tabler/icons'
 import { getGetMembersQueryKey } from '@/api/endpoints/members/members'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
+import { Table } from '@/components/Table'
 
 const PAGE_SIZES = [5, 10]
 
@@ -43,11 +42,14 @@ export function MemberTable() {
     setIsOpenCreateModal(true)
   }, [])
 
-  const deleteSelectedMembers = useCallback(() => {
-    const ids = selectedMembers.map((member) => member.id)
-    deleteMembers(ids)
-    setSelectedMembers([])
-  }, [selectedMembers, deleteMembers])
+  const deleteSelectedMembers = useCallback(
+    (selectedMembers: Member[]) => {
+      const ids = selectedMembers.map((member) => member.id)
+      deleteMembers(ids)
+      setSelectedMembers([])
+    },
+    [deleteMembers]
+  )
 
   useEffect(() => {
     setPage(1)
@@ -66,84 +68,33 @@ export function MemberTable() {
           </>
         )}
       </Group>
-      <DataTable
-        withBorder
-        borderRadius="sm"
-        withColumnBorders
-        striped
-        verticalAlignment="top"
-        fetching={isLoading}
+      <Table
+        data={data?.data}
         columns={[
           {
-            accessor: 'fullName',
-            title: '名前',
-            ellipsis: true,
-            width: 200,
+            key: 'fullName',
+            header: '名前',
           },
-          { accessor: 'email', title: 'Eメールアドレス', ellipsis: true },
+          { key: 'email', header: 'Eメールアドレス' },
           {
-            accessor: 'dateAdded',
-            title: '追加日',
-            ellipsis: true,
-            width: 120,
+            key: 'dateAdded',
+            header: '追加日',
             render: (member: Member) =>
               dayjs(member.dateAdded).format('YYYY/MM/DD'),
           },
         ]}
-        records={data?.data}
+        totalCount={data?.meta.totalCount}
         page={page}
+        pageSize={pageSize}
+        pageSizeOptions={PAGE_SIZES}
         onPageChange={setPage}
-        totalRecords={data?.meta.totalCount}
-        recordsPerPage={pageSize}
-        onRecordsPerPageChange={setPageSize}
-        recordsPerPageOptions={PAGE_SIZES}
-        recordsPerPageLabel="表示件数"
-        selectedRecords={selectedMembers}
-        onSelectedRecordsChange={setSelectedMembers}
-        onRowClick={(row) =>
-          setSelectedMembers((selectedRecords) => {
-            const index = selectedRecords.findIndex(
-              (selectedRecord) => selectedRecord.id === row.id
-            )
-
-            if (index === -1) {
-              return [...selectedRecords, row]
-            }
-            return [
-              ...selectedRecords.slice(0, index),
-              ...selectedRecords.slice(index + 1),
-            ]
-          })
-        }
-        rowContextMenu={{
-          items: (row) => [
-            {
-              key: 'edit',
-              icon: <IconEdit size={14} />,
-              title: `Edit`,
-              onClick: () => {
-                router.push(`/members/${row.id}/edit`)
-              },
-            },
-            {
-              key: 'delete',
-              title: `Delete`,
-              icon: <IconTrashX size={14} />,
-              color: 'red',
-              onClick: () => deleteMember(row.id),
-            },
-            {
-              key: 'deleteMany',
-              hidden:
-                selectedMembers.length <= 1 ||
-                !selectedMembers.map((r) => r.id).includes(row.id),
-              title: `Delete ${selectedMembers.length} selected records`,
-              icon: <IconTrash size={14} />,
-              color: 'red',
-              onClick: deleteSelectedMembers,
-            },
-          ],
-        }}
+        onPageSizeChange={setPageSize}
+        selection={selectedMembers}
+        onSelectionChange={setSelectedMembers}
+        isLoading={isLoading}
+        onEditRow={(row) => router.push(`/members/${row.id}/edit`)}
+        onDeleteRow={(row) => deleteMember(row.id)}
+        onDeleteSelection={deleteSelectedMembers}
       />
       <CreateModal
         isOpen={isOpenCreateModal}
