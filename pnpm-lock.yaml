@@ -10,6 +10,7 @@ specifiers:
   '@heroicons/react': ^2.0.16
   '@hookform/resolvers': ^2.9.11
   '@mantine/core': ^6.0.6
+  '@mantine/dates': ^6.0.6
   '@mantine/form': ^6.0.6
   '@mantine/hooks': ^6.0.6
   '@mantine/modals': ^6.0.6
@@ -77,6 +78,7 @@ dependencies:
   '@heroicons/react': 2.0.16_react@18.2.0
   '@hookform/resolvers': 2.9.11_react-hook-form@7.43.2
   '@mantine/core': 6.0.6_blhy2egl6zgeub7fecy5czrw7e
+  '@mantine/dates': 6.0.6_7cbxwq2i6ifycwljiccut564ni
   '@mantine/form': 6.0.6_react@18.2.0
   '@mantine/hooks': 6.0.6_react@18.2.0
   '@mantine/modals': 6.0.6_feqrfkte3oaz5jjghkdwfk53i4
@@ -3055,6 +3057,21 @@ packages:
     transitivePeerDependencies:
       - '@emotion/react'
       - '@types/react'
+    dev: false
+
+  /@mantine/dates/6.0.6_7cbxwq2i6ifycwljiccut564ni:
+    resolution: {integrity: sha512-eIBnvugWZp0ComzAaiIy5tjBXq9G53Q5Fht6SPyFBxXU/NZ/ZQhLq49nlFyLBpuZQOJ2Ex71S8cv/FMwLaAS4A==}
+    peerDependencies:
+      '@mantine/core': 6.0.6
+      '@mantine/hooks': 6.0.6
+      dayjs: '>=1.0.0'
+      react: '>=16.8.0'
+    dependencies:
+      '@mantine/core': 6.0.6_blhy2egl6zgeub7fecy5czrw7e
+      '@mantine/hooks': 6.0.6_react@18.2.0
+      '@mantine/utils': 6.0.6_react@18.2.0
+      dayjs: 1.11.7
+      react: 18.2.0
     dev: false
 
   /@mantine/form/6.0.6_react@18.2.0:
