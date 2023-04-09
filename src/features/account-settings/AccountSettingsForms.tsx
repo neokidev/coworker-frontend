@@ -65,7 +65,12 @@ export const AccountSettingsForms = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stepper active={active} onStepClick={setActive} breakpoint="sm">
+      <Stepper
+        active={active}
+        onStepClick={setActive}
+        breakpoint="sm"
+        allowNextStepsSelect={false}
+      >
         <Stepper.Step label="Account Details" />
         <Stepper.Step label="Personal Details"></Stepper.Step>
         <Stepper.Step label="Confirm" />
