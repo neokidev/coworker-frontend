@@ -14,8 +14,7 @@ import {
   Group,
   Menu,
   Text,
-  TextInput,
-  UnstyledButton,
+  Stack,
 } from '@mantine/core'
 import { IconPlus, IconTrash } from '@tabler/icons'
 import { IconDotsVertical, IconSearch } from '@tabler/icons-react'
@@ -63,15 +62,15 @@ export const MembersTable2 = () => {
   const menus = [
     <Button
       key="add-button"
-      radius="md"
+      // radius="md"
       leftIcon={<IconPlus size="1rem" />}
       onClick={handleClickAddButton}
     >
       追加
     </Button>,
-    <Menu key="other-menus" shadow="md" radius="md" width={200}>
+    <Menu key="other-menus" shadow="md" width={200}>
       <Menu.Target>
-        <ActionIcon variant="default" size="2.25rem" radius="md">
+        <ActionIcon variant="default" size="2.25rem">
           <IconDotsVertical size="1.125rem" />
         </ActionIcon>
       </Menu.Target>
@@ -109,7 +108,8 @@ export const MembersTable2 = () => {
   }
 
   return (
-    <>
+    <Stack>
+      <Group position="right">{menus}</Group>
       <Table
         data={data?.data || []}
         columns={columns}
@@ -118,13 +118,12 @@ export const MembersTable2 = () => {
         pageSizeOptions={[5, 10]}
         onSelectionChange={setSelection}
         onPaginationChange={setPagination}
-        headerMenus={menus}
       />
       <CreateModal
         isOpen={isOpenCreateModal}
         setIsOpen={setIsOpenCreateModal}
         createMember={createMember}
       />
-    </>
+    </Stack>
   )
 }

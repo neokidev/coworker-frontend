@@ -3,11 +3,14 @@ import {
   useGetMembers as useGetMembersQuery,
 } from '@/api/endpoints/members/members'
 import { useDeleteMembers as useDeleteMembersMutation } from '@/api/endpoints/members/members'
+import { useDeleteMembersId as useDeleteMemberMutation } from '@/api/endpoints/members/members'
 import { usePostMembers as usePostMemberMutation } from '@/api/endpoints/members/members'
+import { usePutMembersId as usePutMemberMutation } from '@/api/endpoints/members/members'
 import {
   ApiCreateMemberRequest,
   ApiListMembersResponse,
   ApiListMembersResponseMeta,
+  ApiUpdateMemberRequestBody,
 } from '@/api/model'
 import { AxiosResponse } from 'axios'
 import { Camelized } from 'humps'
@@ -52,17 +55,11 @@ export const useGetMembers = (page: number, pageSize: number) => {
   )
 }
 
-export const useCreateMember = (page: number, pageSize: number) => {
+export const useCreateMember = (onSuccess?: () => void) => {
   const queryClient = useQueryClient()
   const mutation = usePostMemberMutation({
     mutation: {
-      onSuccess: () => {
-        const queryKey = getGetMembersQueryKey({
-          page_id: page,
-          page_size: pageSize,
-        })
-        queryClient.invalidateQueries(queryKey)
-      },
+      onSuccess,
     },
   })
 
@@ -78,17 +75,50 @@ export const useCreateMember = (page: number, pageSize: number) => {
   return { createMember }
 }
 
-export const useDeleteMembers = (page: number, pageSize: number) => {
+export const useUpdateMember = (onSuccess?: () => void) => {
+  const queryClient = useQueryClient()
+  const mutation = usePutMemberMutation({
+    mutation: {
+      onSuccess,
+    },
+  })
+
+  const updateMember = useCallback(
+    (id: string, data: Camelized<ApiUpdateMemberRequestBody>) => {
+      mutation.mutate({
+        id,
+        data,
+      })
+    },
+    [mutation]
+  )
+
+  return { updateMember }
+}
+
+export const useDeleteMember = (onSuccess?: () => void) => {
+  const queryClient = useQueryClient()
+  const mutation = useDeleteMemberMutation({
+    mutation: {
+      onSuccess,
+    },
+  })
+
+  const deleteMember = useCallback(
+    (id: string) => {
+      mutation.mutate({ id })
+    },
+    [mutation]
+  )
+
+  return { deleteMember }
+}
+
+export const useDeleteMembers = (onSuccess?: () => void) => {
   const queryClient = useQueryClient()
   const mutation = useDeleteMembersMutation({
     mutation: {
-      onSuccess: () => {
-        const queryKey = getGetMembersQueryKey({
-          page_id: page,
-          page_size: pageSize,
-        })
-        queryClient.invalidateQueries(queryKey)
-      },
+      onSuccess,
     },
   })
 

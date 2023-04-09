@@ -37,6 +37,12 @@ import 'simplebar-react/dist/simplebar.min.css'
 import { useEventListenerRef } from 'rooks'
 
 export const useStyles = createStyles((theme) => ({
+  container: {
+    border: `${rem(1)} solid ${theme.colors.gray[2]}`,
+    borderRadius: theme.radius.md,
+    overflow: 'hidden',
+  },
+
   header: {
     position: 'sticky',
     top: 0,
@@ -60,6 +66,8 @@ export const useStyles = createStyles((theme) => ({
 
   th: {
     padding: '0 !important',
+    height: '3rem',
+    color: theme.colors.gray[3],
   },
 
   body: {
@@ -195,7 +203,7 @@ const Th: FC<ThProps> = ({ children, sortable, reversed, sorted, onSort }) => {
     <th className={classes.th}>
       <UnstyledButton onClick={onSort} className={classes.control}>
         <Group position="apart">
-          <Text fw={500} fz="sm">
+          <Text fw={700} fz="sm" color="gray.7">
             {children}
           </Text>
           <Center className={classes.icon}>
@@ -221,7 +229,6 @@ export type TableProps<TData extends HasIdObject> = {
   pageSizeOptions: number[]
   onPaginationChange?: (pagination: Pagination) => void
   onSelectionChange?: (selection: string[]) => void
-  headerMenus?: JSX.Element[]
   tableViewportHeight?: number
 }
 
@@ -233,7 +240,6 @@ export const Table = <TData extends HasIdObject>({
   pageSizeOptions,
   onPaginationChange,
   onSelectionChange,
-  headerMenus,
   tableViewportHeight,
 }: TableProps<TData>): JSX.Element => {
   const pageCount = Math.ceil(totalCount / pagination.pageSize)
@@ -339,19 +345,8 @@ export const Table = <TData extends HasIdObject>({
   })
 
   return (
-    <ScrollArea>
-      <div className="overflow-hidden bg-white rounded-lg border">
-        <div className="flex items-center justify-between border-b border-gray-200 bg-white p-4">
-          <Group spacing="xs">
-            <Stack align="flex-start" spacing={2}>
-              <Title order={3}>タイトル</Title>
-              <Text fz="sm" fw={300} c="dimmed">
-                説明文...
-              </Text>
-            </Stack>
-          </Group>
-          <Group spacing="xs">{headerMenus}</Group>
-        </div>
+    <div className={classes.container}>
+      <ScrollArea>
         <SimpleBar
           scrollableNodeProps={{ ref: tableViewportRef }}
           style={{
@@ -361,7 +356,9 @@ export const Table = <TData extends HasIdObject>({
         >
           <MantineTable horizontalSpacing="md" verticalSpacing="xs" miw={700}>
             <thead
-              className={cx(classes.header, { [classes.scrolled]: scrolled })}
+              className={cx(classes.header, {
+                [classes.scrolled]: scrolled,
+              })}
             >
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
@@ -419,75 +416,75 @@ export const Table = <TData extends HasIdObject>({
             </tbody>
           </MantineTable>
         </SimpleBar>
+      </ScrollArea>
 
-        <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-2">
-          <Group spacing={32}>
-            <Group spacing={6}>
-              <Text fz="md" pb={2}>
-                {totalCount}
-              </Text>
-              <Text fz="xs" c="dimmed">
-                件中
-              </Text>
-              <Text fz="md" pb={2}>
-                {startNumber}
-              </Text>
-              <Text fz="xs" c="dimmed">
-                件
-              </Text>
-              <Text fz="xs" c="dimmed">
-                〜
-              </Text>
-              <Text fz="md" pb={2}>
-                {endNumber}
-              </Text>
-              <Text fz="xs" c="dimmed">
-                件
-              </Text>
-            </Group>
-            <Group spacing="xs">
-              <Select
-                className={classes.pageSizeSelect}
-                value={String(pageSize)}
-                onChange={(value) => {
-                  if (value && onPaginationChange) {
-                    const newPageSize = Number(value)
-
-                    if (pageSize < newPageSize) {
-                      const newPageCount = Math.ceil(totalCount / newPageSize)
-                      const newPage = page <= newPageCount ? page : newPageCount
-                      onPaginationChange({
-                        page: newPage,
-                        pageSize: newPageSize,
-                      })
-                    } else {
-                      onPaginationChange({
-                        page,
-                        pageSize: newPageSize,
-                      })
-                    }
-                  }
-                }}
-                data={pageSizeOptions.map((option) => ({
-                  value: String(option),
-                  label: String(option),
-                }))}
-              />
-              <Text fz="xs" c="dimmed">
-                件表示
-              </Text>
-            </Group>
+      <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-2">
+        <Group spacing={32}>
+          <Group spacing={6}>
+            <Text fz="md" pb={2}>
+              {totalCount}
+            </Text>
+            <Text fz="xs" c="dimmed">
+              件中
+            </Text>
+            <Text fz="md" pb={2}>
+              {startNumber}
+            </Text>
+            <Text fz="xs" c="dimmed">
+              件
+            </Text>
+            <Text fz="xs" c="dimmed">
+              〜
+            </Text>
+            <Text fz="md" pb={2}>
+              {endNumber}
+            </Text>
+            <Text fz="xs" c="dimmed">
+              件
+            </Text>
           </Group>
-          <MantinePagination
-            value={page}
-            onChange={(newPage) =>
-              onPaginationChange &&
-              onPaginationChange({ page: newPage, pageSize })
-            }
-            total={pageCount}
-          />
-        </div>
+          <Group spacing="xs">
+            <Select
+              className={classes.pageSizeSelect}
+              value={String(pageSize)}
+              onChange={(value) => {
+                if (value && onPaginationChange) {
+                  const newPageSize = Number(value)
+
+                  if (pageSize < newPageSize) {
+                    const newPageCount = Math.ceil(totalCount / newPageSize)
+                    const newPage = page <= newPageCount ? page : newPageCount
+                    onPaginationChange({
+                      page: newPage,
+                      pageSize: newPageSize,
+                    })
+                  } else {
+                    onPaginationChange({
+                      page,
+                      pageSize: newPageSize,
+                    })
+                  }
+                }
+              }}
+              data={pageSizeOptions.map((option) => ({
+                value: String(option),
+                label: String(option),
+              }))}
+            />
+            <Text fz="xs" c="dimmed">
+              件表示
+            </Text>
+          </Group>
+        </Group>
+        <MantinePagination
+          value={page}
+          onChange={(newPage) =>
+            onPaginationChange &&
+            onPaginationChange({ page: newPage, pageSize })
+          }
+          total={pageCount}
+        />
       </div>
-    </ScrollArea>
+    </div>
   )
 }
