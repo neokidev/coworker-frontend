@@ -66,6 +66,7 @@ export function Table<TData extends HasIdObject>({
         const index = selection.findIndex((item) => item.id === row.id)
         if (index === -1) {
           onSelectionChange([...selection, row])
+          return
         }
 
         onSelectionChange([
