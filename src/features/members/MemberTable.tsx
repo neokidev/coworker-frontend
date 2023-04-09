@@ -1,135 +1,101 @@
-import {
-  ActionIcon,
-  Button,
-  createStyles,
-  Group,
-  Skeleton,
-} from '@mantine/core'
-import { IconPencil, IconPlus, IconTrash } from '@tabler/icons'
-import { DataTable } from 'mantine-datatable'
+import { useCallback, useEffect, useState } from 'react'
 import dayjs from 'dayjs'
-import { useCallback, useLayoutEffect, useState } from 'react'
+import { Button, Group, Skeleton } from '@mantine/core'
 import {
   Member,
   useCreateMember,
+  useDeleteMember,
   useDeleteMembers,
   useGetMembers,
-} from './useMembers'
-import { CreateModal } from './CreateModal'
+} from '@/features/members/useMembers'
+import { CreateModal } from '@/features/members/CreateModal'
+import { IconPlus } from '@tabler/icons'
+import { getGetMembersQueryKey } from '@/api/endpoints/members/members'
+import { useQueryClient } from '@tanstack/react-query'
+import { useRouter } from 'next/router'
+import { Table } from '@/components/Table'
 
-const useStyles = createStyles((theme) => ({
-  row: {
-    color: theme.colors.gray[7],
-  },
-  badgeTeal: {
-    border: 0,
-    backgroundColor: theme.colors.teal[0],
-    color: theme.colors.teal[8],
-    textTransform: 'capitalize',
-    fontFamily: 'initial',
-    padding: theme.spacing.xs,
-  },
-  badgeGray: {
-    border: 0,
-    backgroundColor: theme.colors.gray[2],
-    color: theme.colors.gray[8],
-    textTransform: 'capitalize',
-    fontFamily: 'initial',
-    padding: theme.spacing.xs,
-  },
-}))
+const PAGE_SIZES = [5, 10]
 
-export const MembersTable = () => {
+export function MemberTable() {
+  const router = useRouter()
   const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(5)
-  const [isOpenCreateModal, setIsOpenCreateModal] = useState(false)
-  const { classes } = useStyles()
+  const [pageSize, setPageSize] = useState(PAGE_SIZES[1])
   const { data, isLoading } = useGetMembers(page, pageSize)
-  const { createMember } = useCreateMember(page, pageSize)
-  const { deleteMembers } = useDeleteMembers(page, pageSize)
   const [selectedMembers, setSelectedMembers] = useState<Member[]>([])
 
-  const openModal = useCallback(() => {
+  const queryClient = useQueryClient()
+  const onMutateSuccess = useCallback(() => {
+    const queryKey = getGetMembersQueryKey({
+      page_id: page,
+      page_size: pageSize,
+    })
+    queryClient.invalidateQueries(queryKey)
+  }, [queryClient, page, pageSize])
+
+  const { createMember } = useCreateMember(onMutateSuccess)
+  const { deleteMember } = useDeleteMember(onMutateSuccess)
+  const { deleteMembers } = useDeleteMembers(onMutateSuccess)
+  const [isOpenCreateModal, setIsOpenCreateModal] = useState(false)
+
+  const openCreateModal = useCallback(() => {
     setIsOpenCreateModal(true)
-  }, [setIsOpenCreateModal])
+  }, [])
 
-  const deleteSelectedMembers = useCallback(() => {
-    const ids = selectedMembers.map((member) => member.id)
-    deleteMembers(ids)
-    setSelectedMembers([])
-  }, [selectedMembers, deleteMembers])
+  const deleteSelectedMembers = useCallback(
+    (selectedMembers: Member[]) => {
+      const ids = selectedMembers.map((member) => member.id)
+      deleteMembers(ids)
+      setSelectedMembers([])
+    },
+    [deleteMembers]
+  )
 
-  useLayoutEffect(() => {
-    if (data !== undefined && page > data.meta.pageCount) {
-      setPage(data.meta.pageCount)
-    }
-  }, [page, data])
+  useEffect(() => {
+    setPage(1)
+  }, [pageSize])
 
   return (
     <>
-      {
-        <Group mb="sm" position="right">
-          {isLoading ? (
-            <Skeleton width="50%" height={36} />
-          ) : (
-            <>
-              <Button leftIcon={<IconPlus size={16} />} onClick={openModal}>
-                データを追加
-              </Button>
-              <Button
-                leftIcon={<IconTrash size={16} />}
-                color="red"
-                disabled={!selectedMembers.length}
-                onClick={deleteSelectedMembers}
-              >
-                選択したデータを削除
-              </Button>
-            </>
-          )}
-        </Group>
-      }
-      {isLoading ? (
-        <Skeleton height={360} />
-      ) : (
-        <DataTable
-          minHeight={!data?.data || !data.data.length ? 320 : undefined}
-          records={data?.data}
-          withBorder
-          striped
-          borderRadius="md"
-          shadow="sm"
-          horizontalSpacing="xl"
-          verticalSpacing="sm"
-          rowClassName={classes.row}
-          columns={[
-            { accessor: 'fullName', title: '名前', width: '50%' },
-            { accessor: 'email', title: 'Eメールアドレス', width: '50%' },
-            {
-              accessor: 'dateAdded',
-              title: '追加日',
-              width: 160,
-              render: (member: Member) =>
-                dayjs(member.dateAdded).format('YYYY/MM/DD'),
-            },
-            {
-              accessor: 'actions',
-              title: '',
-              render: () => (
-                <ActionIcon color="gray" onClick={() => alert('工事中')}>
-                  <IconPencil size={22} />
-                </ActionIcon>
-              ),
-            },
-          ]}
-          selectedRecords={selectedMembers}
-          onSelectedRecordsChange={setSelectedMembers}
-          noRecordsText="データがありません"
-          totalRecords={data?.meta.totalCount || 0}
-          recordsPerPage={data?.meta.pageSize || 0}
-          page={page}
-          onPageChange={(p) => setPage(p)}
-        />
-      )}
+      <Group mb="sm" position="right">
+        {isLoading ? (
+          <Skeleton width={86} height={36} />
+        ) : (
+          <>
+            <Button leftIcon={<IconPlus size={16} />} onClick={openCreateModal}>
+              追加
+            </Button>
+          </>
+        )}
+      </Group>
+      <Table
+        data={data?.data}
+        columns={[
+          {
+            key: 'fullName',
+            header: '名前',
+          },
+          { key: 'email', header: 'Eメールアドレス' },
+          {
+            key: 'dateAdded',
+            header: '追加日',
+            render: (member: Member) =>
+              dayjs(member.dateAdded).format('YYYY/MM/DD'),
+          },
+        ]}
+        totalCount={data?.meta.totalCount}
+        page={page}
+        pageSize={pageSize}
+        pageSizeOptions={PAGE_SIZES}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+        selection={selectedMembers}
+        onSelectionChange={setSelectedMembers}
+        isLoading={isLoading}
+        onEditRow={(row) => router.push(`/members/${row.id}/edit`)}
+        onDeleteRow={(row) => deleteMember(row.id)}
+        onDeleteSelection={deleteSelectedMembers}
+      />
       <CreateModal
         isOpen={isOpenCreateModal}
         setIsOpen={setIsOpenCreateModal}
