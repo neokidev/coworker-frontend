@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { FC, useState } from 'react'
 import {
   Group,
   Box,
@@ -8,12 +8,9 @@ import {
   createStyles,
   rem,
 } from '@mantine/core'
-import {
-  IconCalendarStats,
-  IconChevronLeft,
-  IconChevronRight,
-} from '@tabler/icons-react'
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
 import Link from 'next/link'
+import { NavbarLink } from '@/components/Layout/types'
 
 const useStyles = createStyles((theme) => ({
   control: {
@@ -58,16 +55,28 @@ const useStyles = createStyles((theme) => ({
     },
   },
 
+  linkActive: {
+    '&, &:hover': {
+      backgroundColor: theme.fn.variant({
+        variant: 'light',
+        color: theme.primaryColor,
+      }).background,
+      color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
+        .color,
+    },
+  },
+
   chevron: {
     transition: 'transform 200ms ease',
   },
 }))
 
 interface LinksGroupProps {
-  icon: React.FC<any>
+  icon: FC<any>
   label: string
+  links?: NavbarLink[]
+  activeLink?: string
   initiallyOpened?: boolean
-  links?: { label: string; link: string }[]
 }
 
 export function LinksGroup({
@@ -75,13 +84,20 @@ export function LinksGroup({
   label,
   initiallyOpened,
   links,
+  activeLink,
 }: LinksGroupProps) {
-  const { classes, theme } = useStyles()
+  const { classes, theme, cx } = useStyles()
   const hasLinks = Array.isArray(links)
   const [opened, setOpened] = useState(initiallyOpened || false)
   const ChevronIcon = theme.dir === 'ltr' ? IconChevronRight : IconChevronLeft
   const items = (hasLinks ? links : []).map((link) => (
-    <Link key={link.label} href={link.link} className={classes.link}>
+    <Link
+      key={link.label}
+      href={link.link}
+      className={cx(classes.link, {
+        [classes.linkActive]: link.link === activeLink,
+      })}
+    >
       {link.label}
     </Link>
   ))

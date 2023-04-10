@@ -1,76 +1,14 @@
 import {
   Navbar as MantineNavbar,
-  Group,
-  Code,
   ScrollArea,
   createStyles,
   rem,
 } from '@mantine/core'
-import {
-  IconNotes,
-  IconCalendarStats,
-  IconGauge,
-  IconPresentationAnalytics,
-  IconFileAnalytics,
-  IconAdjustments,
-  IconLock,
-} from '@tabler/icons-react'
 import { LinksGroup } from './NavbarLinksGroup'
-import { IconTable, IconUser } from '@tabler/icons'
-
-// const mockdata = [
-//   { label: 'Dashboard', icon: IconGauge },
-//   {
-//     label: 'Market news',
-//     icon: IconNotes,
-//     initiallyOpened: true,
-//     links: [
-//       { label: 'Overview', link: '/' },
-//       { label: 'Forecasts', link: '/' },
-//       { label: 'Outlook', link: '/' },
-//       { label: 'Real time', link: '/' },
-//     ],
-//   },
-//   {
-//     label: 'Releases',
-//     icon: IconCalendarStats,
-//     links: [
-//       { label: 'Upcoming releases', link: '/' },
-//       { label: 'Previous releases', link: '/' },
-//       { label: 'Releases schedule', link: '/' },
-//     ],
-//   },
-//   { label: 'Analytics', icon: IconPresentationAnalytics },
-//   { label: 'Contracts', icon: IconFileAnalytics },
-//   { label: 'Settings', icon: IconAdjustments },
-//   {
-//     label: 'Security',
-//     icon: IconLock,
-//     links: [
-//       { label: 'Enable 2FA', link: '/' },
-//       { label: 'Change password', link: '/' },
-//       { label: 'Recovery codes', link: '/' },
-//     ],
-//   },
-// ]
-
-const menus = [
-  {
-    label: 'アカウント',
-    icon: IconUser,
-    links: [
-      { label: 'ログイン画面', link: '/login' },
-      { label: 'アカウント設定', link: '/account-settings' },
-      { label: 'カート', link: '/cart' },
-    ],
-  },
-  {
-    label: 'テーブル',
-    icon: IconTable,
-    links: [{ label: 'メンバー一覧', link: '/members' }],
-  },
-  { label: 'カレンダー（工事中）', icon: IconCalendarStats },
-]
+import { usePathname } from 'next/navigation'
+import { useState } from 'react'
+import { navbarItems } from '@/components/Layout/navbarItems'
+import { findActiveLink, hasActiveLink } from '@/components/Layout/utils/link'
 
 const useStyles = createStyles((theme) => ({
   navbar: {
@@ -104,8 +42,22 @@ const useStyles = createStyles((theme) => ({
 }))
 
 export function Navbar() {
+  const pathname = usePathname()
+  const [activeLink] = useState<string | undefined>(
+    pathname !== null ? findActiveLink(pathname, navbarItems) : undefined
+  )
+
   const { classes } = useStyles()
-  const links = menus.map((item) => <LinksGroup {...item} key={item.label} />)
+  const links = navbarItems.map((item) => (
+    <LinksGroup
+      {...item}
+      key={item.label}
+      activeLink={activeLink}
+      initiallyOpened={
+        activeLink !== undefined && hasActiveLink(activeLink, item)
+      }
+    />
+  ))
 
   return (
     <MantineNavbar width={{ base: 300 }} px="md" className={classes.navbar}>
