@@ -74,9 +74,9 @@ const useStyles = createStyles((theme) => ({
 interface LinksGroupProps {
   icon: FC<any>
   label: string
-  initiallyOpened?: boolean
   links?: NavbarLink[]
   activeLink?: string
+  initiallyOpened?: boolean
 }
 
 export function LinksGroup({

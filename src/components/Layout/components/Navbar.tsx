@@ -4,34 +4,11 @@ import {
   createStyles,
   rem,
 } from '@mantine/core'
-import { IconCalendarStats } from '@tabler/icons-react'
 import { LinksGroup } from './NavbarLinksGroup'
-import { IconTable, IconUser } from '@tabler/icons'
 import { usePathname } from 'next/navigation'
-import { useCallback, useState } from 'react'
-import { NavbarLinksGroup } from '@/components/Layout/types'
-
-const linkGroups: NavbarLinksGroup[] = [
-  {
-    label: 'アカウント',
-    icon: IconUser,
-    links: [
-      { label: 'ログイン画面', link: '/login' },
-      { label: 'アカウント設定', link: '/account-settings' },
-      { label: 'カート', link: '/cart' },
-    ],
-  },
-  {
-    label: 'テーブル',
-    icon: IconTable,
-    links: [{ label: 'メンバー一覧', link: '/members' }],
-  },
-  {
-    label: 'カレンダー',
-    icon: IconCalendarStats,
-    links: [{ label: '工事中', link: '#' }],
-  },
-]
+import { useState } from 'react'
+import { navbarItems } from '@/components/Layout/navbarItems'
+import { findActiveLink, hasActiveLink } from '@/components/Layout/utils/link'
 
 const useStyles = createStyles((theme) => ({
   navbar: {
@@ -64,51 +41,21 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-function isCurrentPathStartsWith(currentPath: string, targetPath: string) {
-  return currentPath !== null ? currentPath.startsWith(targetPath) : false
-}
-
 export function Navbar() {
   const pathname = usePathname()
-
-  const findActiveLink = useCallback((): string | undefined => {
-    if (pathname === null) {
-      return undefined
-    }
-
-    for (const item of linkGroups) {
-      if (!Array.isArray(item.links)) {
-        continue
-      }
-
-      for (const link of item.links) {
-        if (isCurrentPathStartsWith(pathname, link.link)) {
-          return pathname
-        }
-      }
-    }
-
-    return undefined
-  }, [pathname])
-
-  const [activeLink, setActiveLink] = useState<string | undefined>(
-    findActiveLink()
-  )
-
-  const hasActiveLink = useCallback(
-    (links: { label: string; link: string }[]) => {
-      return links.some((link) => link.link === activeLink)
-    },
-    [activeLink]
+  const [activeLink] = useState<string | undefined>(
+    pathname !== null ? findActiveLink(pathname, navbarItems) : undefined
   )
 
   const { classes } = useStyles()
-  const links = linkGroups.map((item) => (
+  const links = navbarItems.map((item) => (
     <LinksGroup
       {...item}
       key={item.label}
-      initiallyOpened={Array.isArray(item.links) && hasActiveLink(item.links)}
       activeLink={activeLink}
+      initiallyOpened={
+        activeLink !== undefined && hasActiveLink(activeLink, item)
+      }
     />
   ))
 
