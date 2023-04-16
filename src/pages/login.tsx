@@ -10,11 +10,21 @@ import {
 } from '@mantine/core'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/features/auth'
 
 export default function Login() {
   const router = useRouter()
+  const { login, logout } = useAuth()
 
-  const login = () => router.push('/')
+  const onClickLoginButton = () => {
+    login('joe.yamada@example.com', 'my_name_is_joe_yamada')
+    // router.push('/')
+  }
+
+  const onClickLogoutButton = () => {
+    logout()
+    // router.push('/')
+  }
 
   return (
     <Container className="flex h-screen items-center justify-center overflow-hidden">
@@ -27,8 +37,11 @@ export default function Login() {
         <Group position="apart" mt="xl">
           <Checkbox label="ログインを保存する" sx={{ lineHeight: 1 }} />
         </Group>
-        <Button fullWidth mt="xl" onClick={login}>
+        <Button fullWidth mt="xl" onClick={onClickLoginButton}>
           ログイン
+        </Button>
+        <Button fullWidth mt="xl" onClick={onClickLogoutButton}>
+          ログアウト
         </Button>
       </Paper>
     </Container>
