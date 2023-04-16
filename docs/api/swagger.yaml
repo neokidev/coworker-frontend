@@ -13,9 +13,26 @@ definitions:
       last_name:
         type: string
     required:
-    - first_name
-    - id
-    - last_name
+      - first_name
+      - id
+      - last_name
+    type: object
+  api.createUserRequest:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        minLength: 14
+        type: string
+    required:
+      - email
+      - first_name
+      - last_name
+      - password
     type: object
   api.errorResponse:
     properties:
@@ -42,6 +59,22 @@ definitions:
       total_count:
         type: integer
     type: object
+  api.loginUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 14
+        type: string
+    required:
+      - email
+      - password
+    type: object
+  api.loginUserResponse:
+    properties:
+      message:
+        type: string
+    type: object
   api.memberResponse:
     properties:
       created_at:
@@ -65,6 +98,19 @@ definitions:
       last_name:
         type: string
     type: object
+  api.userResponse:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+    required:
+      - email
+    type: object
 info:
   contact: {}
   title: Coworker API
@@ -73,10 +119,10 @@ paths:
   /members:
     delete:
       parameters:
-      - in: query
-        name: ids
-        required: true
-        type: string
+        - in: query
+          name: ids
+          required: true
+          type: string
       responses:
         "204":
           description: No Content
@@ -90,20 +136,20 @@ paths:
             $ref: '#/definitions/api.errorResponse'
       summary: Delete members
       tags:
-      - members
+        - members
     get:
       parameters:
-      - in: query
-        minimum: 1
-        name: page_id
-        required: true
-        type: integer
-      - in: query
-        maximum: 10
-        minimum: 5
-        name: page_size
-        required: true
-        type: integer
+        - in: query
+          minimum: 1
+          name: page_id
+          required: true
+          type: integer
+        - in: query
+          maximum: 10
+          minimum: 5
+          name: page_size
+          required: true
+          type: integer
       responses:
         "200":
           description: OK
@@ -119,15 +165,15 @@ paths:
             $ref: '#/definitions/api.errorResponse'
       summary: List members
       tags:
-      - members
+        - members
     post:
       parameters:
-      - description: Member object
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/api.createMemberRequest'
+        - description: Member object
+          in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/api.createMemberRequest'
       responses:
         "200":
           description: OK
@@ -143,15 +189,15 @@ paths:
             $ref: '#/definitions/api.errorResponse'
       summary: Create member
       tags:
-      - members
+        - members
   /members/{id}:
     delete:
       parameters:
-      - description: Member ID
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: Member ID
+          in: path
+          name: id
+          required: true
+          type: string
       responses:
         "204":
           description: No Content
@@ -165,14 +211,14 @@ paths:
             $ref: '#/definitions/api.errorResponse'
       summary: Delete member
       tags:
-      - members
+        - members
     get:
       parameters:
-      - description: Member ID
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: Member ID
+          in: path
+          name: id
+          required: true
+          type: string
       responses:
         "200":
           description: OK
@@ -188,20 +234,20 @@ paths:
             $ref: '#/definitions/api.errorResponse'
       summary: Get member
       tags:
-      - members
+        - members
     put:
       parameters:
-      - description: Member ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Member object
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/api.updateMemberRequestBody'
+        - description: Member ID
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: Member object
+          in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/api.updateMemberRequestBody'
       responses:
         "200":
           description: OK
@@ -217,5 +263,107 @@ paths:
             $ref: '#/definitions/api.errorResponse'
       summary: Update member
       tags:
-      - members
+        - members
+  /users:
+    post:
+      parameters:
+        - description: User object
+          in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/api.createUserRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.userResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+      summary: Create user
+      tags:
+        - users
+  /users/login:
+    post:
+      parameters:
+        - description: User object
+          in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/api.loginUserRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.loginUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+      summary: Login user
+      tags:
+        - users
+  /users/logout:
+    post:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.loginUserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+      summary: Logout user
+      tags:
+        - users
+  /users/me:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.userResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+      summary: Get logged in user
+      tags:
+        - users
 swagger: "2.0"
