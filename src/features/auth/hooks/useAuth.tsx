@@ -6,6 +6,18 @@ import {
 import { useCallback } from 'react'
 import { useRouter } from 'next/router'
 
+interface LoginParams {
+  email: string
+  password: string
+}
+
+interface RegisterParams {
+  email: string
+  password: string
+  firstName: string
+  lastName: string
+}
+
 export const useAuth = () => {
   const router = useRouter()
 
@@ -35,7 +47,7 @@ export const useAuth = () => {
   })
 
   const login = useCallback(
-    (email: string, password: string) => {
+    ({ email, password }: LoginParams) => {
       loginMutation.mutate({ data: { email, password } })
     },
     [loginMutation]
@@ -46,12 +58,7 @@ export const useAuth = () => {
   }, [logoutMutation])
 
   const registerAndLogin = useCallback(
-    async (
-      email: string,
-      password: string,
-      firstName: string,
-      lastName: string
-    ) => {
+    async ({ email, password, firstName, lastName }: RegisterParams) => {
       await registerMutation
         .mutateAsync({
           data: {
@@ -61,7 +68,7 @@ export const useAuth = () => {
             lastName,
           },
         })
-        .then(() => login(email, password))
+        .then(() => login({ email, password }))
         .catch((error) => {
           console.error(error)
         })

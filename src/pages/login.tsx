@@ -36,8 +36,8 @@ export default function Login() {
       email: '',
       password: '',
     },
-    onSubmit: ({ email, password }) => {
-      login(email, password)
+    onSubmit: (data) => {
+      login(data)
     },
   })
 
@@ -60,7 +60,7 @@ export default function Login() {
           </Stack>
         </Form>
         <Divider my="xl" />
-        <Link href="/login">
+        <Link href="/register">
           <Button fullWidth variant="outline">
             アカウントを新規作成
           </Button>

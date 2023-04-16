@@ -8,6 +8,7 @@ import { getUsersMe } from '@/api/endpoints/users/users'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { Session } from '@/types/types'
+import { isAuthRequiredPath } from '@/features/auth'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,13 +27,13 @@ export default function MyApp({
   const router = useRouter()
 
   useEffect(() => {
-    if (router.pathname !== '/login' && session.user === undefined) {
+    if (isAuthRequiredPath(router.pathname) && session.user === undefined) {
       router.push('/login')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  if (router.pathname !== '/login' && session.user === undefined) {
+  if (isAuthRequiredPath(router.pathname) && session.user === undefined) {
     return null
   }
 

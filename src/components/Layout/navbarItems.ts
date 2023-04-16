@@ -7,7 +7,6 @@ export const navbarItems: NavbarLinksGroup[] = [
     label: 'アカウント',
     icon: IconUser,
     links: [
-      { label: 'ログイン画面', link: '/login' },
       { label: 'アカウント設定', link: '/account-settings' },
       { label: 'カート', link: '/cart' },
     ],
