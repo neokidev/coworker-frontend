@@ -15,6 +15,9 @@ export const useAuth = () => {
         router.push('/')
         console.log('onsuccess login')
       },
+      onError: () => {
+        alert('ログインに失敗しました')
+      },
     },
     request: { withCredentials: true },
   })

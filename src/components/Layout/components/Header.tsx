@@ -1,10 +1,15 @@
-import { Header as MantineHeader } from '@mantine/core'
+import { Header as MantineHeader, Menu, Button } from '@mantine/core'
 import Link from 'next/link'
 import Image from 'next/image'
 import { BellIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
 import { UserIcon } from '@heroicons/react/24/solid'
+import { useSession } from '@/providers/session'
+import { useAuth } from '@/features/auth'
 
 export function Header() {
+  const { user } = useSession()
+  const { logout } = useAuth()
+
   return (
     <MantineHeader
       height={64}
@@ -25,18 +30,26 @@ export function Header() {
 
             <hr className="border-t text-gray-500" />
 
-            <button className="flex items-center justify-center space-x-2 bg-transparent">
-              <UserIcon className="h-7 w-7 rounded-full bg-gray-500 p-1 text-white" />
-              <div className="flex items-center space-x-1">
-                <span className="text-sm font-medium text-gray-600">
-                  山田 太郎
-                </span>
-                <ChevronDownIcon
-                  className="h-3 w-3 translate-y-0.5 text-gray-500"
-                  strokeWidth={3}
-                />
-              </div>
-            </button>
+            <Menu shadow="md" position="bottom-end" width={200}>
+              <Menu.Target>
+                <button className="flex items-center justify-center space-x-2 bg-transparent">
+                  <UserIcon className="h-7 w-7 rounded-full bg-gray-500 p-1 text-white" />
+                  <div className="flex items-center space-x-1">
+                    <span className="text-sm font-medium text-gray-600">
+                      {`${user?.lastName} ${user?.firstName}`}
+                    </span>
+                    <ChevronDownIcon
+                      className="h-3 w-3 translate-y-0.5 text-gray-500"
+                      strokeWidth={3}
+                    />
+                  </div>
+                </button>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Item onClick={logout}>ログアウト</Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           </div>
         </div>
       </div>
