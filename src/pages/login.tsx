@@ -1,9 +1,20 @@
-import { Checkbox, Paper, Container, Group, Center, Stack } from '@mantine/core'
+import {
+  Checkbox,
+  Paper,
+  Container,
+  Group,
+  Center,
+  Stack,
+  Divider,
+  Button,
+  px,
+} from '@mantine/core'
 import Image from 'next/image'
 import { useAuth } from '@/features/auth'
 import { PasswordInput, TextInput, useForm } from '@/components/Form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import Link from 'next/link'
 
 const schema = z.object({
   email: z
@@ -32,9 +43,9 @@ export default function Login() {
 
   return (
     <Container className="flex h-screen items-center justify-center overflow-hidden">
-      <Paper className="w-[28rem]" withBorder shadow="md" p={48} radius="md">
-        <Center pb={32}>
-          <Image src="logo.svg" alt="logo" width={192} height={0} />
+      <Paper w={px('26rem')} withBorder shadow="md" p={px('3rem')} radius="md">
+        <Center pb={px('3rem')}>
+          <Image src="logo.svg" alt="logo" width={px('13rem')} height={0} />
         </Center>
         <Form>
           <Stack>
@@ -48,6 +59,12 @@ export default function Login() {
             </Form.SubmitButton>
           </Stack>
         </Form>
+        <Divider my="xl" />
+        <Link href="/login">
+          <Button fullWidth variant="outline">
+            アカウントを新規作成
+          </Button>
+        </Link>
       </Paper>
     </Container>
   )
