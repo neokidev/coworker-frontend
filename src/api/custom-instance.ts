@@ -28,6 +28,9 @@ AXIOS_INSTANCE.interceptors.request.use((config) => {
   if (config.data) {
     newConfig.data = decamelizeKeys(config.data)
   }
+
+  // Most APIs require authentication, so set withCredentials to true to include cookies for authorization
+  newConfig.withCredentials = true
   return newConfig
 })
 

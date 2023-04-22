@@ -31,7 +31,6 @@ export const useAuth = () => {
         alert('ログインに失敗しました')
       },
     },
-    request: { withCredentials: true },
   })
   const logoutMutation = usePostUsersLogout({
     mutation: {
@@ -40,11 +39,8 @@ export const useAuth = () => {
         console.log('onsuccess logout')
       },
     },
-    request: { withCredentials: true },
   })
-  const registerMutation = usePostUsers({
-    request: { withCredentials: true },
-  })
+  const registerMutation = usePostUsers()
 
   const login = useCallback(
     ({ email, password }: LoginParams) => {
