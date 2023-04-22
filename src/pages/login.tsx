@@ -15,6 +15,10 @@ import { PasswordInput, TextInput, useForm } from '@/components/Form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import Link from 'next/link'
+import { useCallback } from 'react'
+
+const testUserEmail = 'testuser@email.com'
+const testUserPassword = 'password'
 
 const schema = z.object({
   email: z
@@ -41,6 +45,13 @@ export default function Login() {
     },
   })
 
+  const loginAsTestUser = useCallback(() => {
+    login({
+      email: testUserEmail,
+      password: testUserPassword,
+    })
+  }, [login])
+
   return (
     <Container className="flex h-screen items-center justify-center overflow-hidden">
       <Paper w={px('26rem')} withBorder shadow="md" p={px('3rem')} radius="md">
@@ -60,11 +71,16 @@ export default function Login() {
           </Stack>
         </Form>
         <Divider my="xl" />
-        <Link href="/register">
-          <Button fullWidth variant="outline">
-            アカウントを新規作成
+        <Stack spacing="xl">
+          <Button fullWidth variant="outline" onClick={loginAsTestUser}>
+            テストユーザでログイン
           </Button>
-        </Link>
+          <Link href="/register">
+            <Button fullWidth variant="outline">
+              アカウントを新規作成
+            </Button>
+          </Link>
+        </Stack>
       </Paper>
     </Container>
   )
