@@ -21,7 +21,7 @@ const schema = z.object({
     .string()
     .min(1, { message: 'Required' })
     .email({ message: 'Wrong Format' }),
-  password: z.string().min(1, { message: 'Required' }),
+  password: z.string().min(8),
 })
 
 export default function Login() {
