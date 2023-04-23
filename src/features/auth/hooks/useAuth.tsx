@@ -20,6 +20,7 @@ interface RegisterParams {
 
 type UseAuthParams = {
   onLoginError?: () => void
+  onLogoutError?: () => void
   onRegisterError?: () => void
 }
 
@@ -50,6 +51,10 @@ export const useAuth: UseAuth = (params) => {
       onSuccess: () => {
         router.push('/login')
         console.log('onsuccess logout')
+      },
+      onError: () => {
+        params?.onLogoutError?.()
+        alert('ログアウトに失敗しました')
       },
     },
   })
