@@ -5,10 +5,24 @@ import { BellIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
 import { UserIcon } from '@heroicons/react/24/solid'
 import { useSession } from '@/providers/session'
 import { useAuth } from '@/features/auth'
+import { useCallback, useState } from 'react'
 
 export function Header() {
   const { user } = useSession()
-  const { logout } = useAuth()
+  const [isLogoutButtonClicked, setIsLogoutButtonClicked] = useState(false)
+
+  const handleLogoutError = useCallback(() => {
+    setIsLogoutButtonClicked(false)
+  }, [])
+
+  const { logout } = useAuth({
+    onLogoutError: handleLogoutError,
+  })
+
+  const handleLogout = useCallback(() => {
+    setIsLogoutButtonClicked(true)
+    logout()
+  }, [logout])
 
   return (
     <MantineHeader
@@ -47,7 +61,12 @@ export function Header() {
               </Menu.Target>
 
               <Menu.Dropdown>
-                <Menu.Item onClick={logout}>ログアウト</Menu.Item>
+                <Menu.Item
+                  disabled={isLogoutButtonClicked}
+                  onClick={handleLogout}
+                >
+                  ログアウト
+                </Menu.Item>
               </Menu.Dropdown>
             </Menu>
           </div>

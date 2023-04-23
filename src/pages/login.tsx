@@ -15,7 +15,7 @@ import { PasswordInput, TextInput, useForm } from '@/components/Form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import Link from 'next/link'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 const testUserEmail = 'testuser@email.com'
 const testUserPassword = 'password'
@@ -29,7 +29,15 @@ const schema = z.object({
 })
 
 export default function Login() {
-  const { login } = useAuth()
+  const [isLoginButtonClicked, setIsLoginButtonClicked] = useState(false)
+
+  const handleLoginError = useCallback(() => {
+    setIsLoginButtonClicked(false)
+  }, [])
+
+  const { login } = useAuth({
+    onLoginError: handleLoginError,
+  })
 
   const [Form, methods] = useForm<{
     email: string
@@ -41,11 +49,13 @@ export default function Login() {
       password: '',
     },
     onSubmit: (data) => {
+      setIsLoginButtonClicked(true)
       login(data)
     },
   })
 
   const loginAsTestUser = useCallback(() => {
+    setIsLoginButtonClicked(true)
     login({
       email: testUserEmail,
       password: testUserPassword,
@@ -65,18 +75,23 @@ export default function Login() {
             <Group position="apart" mt="sm">
               <Checkbox label="ログインを保存する" sx={{ lineHeight: 1 }} />
             </Group>
-            <Form.SubmitButton mt="sm" loading={methods.formState.isSubmitting}>
+            <Form.SubmitButton mt="sm" disabled={isLoginButtonClicked}>
               {methods.formState.isSubmitting ? 'ログイン中' : 'ログイン'}
             </Form.SubmitButton>
           </Stack>
         </Form>
         <Divider my="xl" />
         <Stack spacing="xl">
-          <Button fullWidth variant="outline" onClick={loginAsTestUser}>
+          <Button
+            disabled={isLoginButtonClicked}
+            fullWidth
+            variant="outline"
+            onClick={loginAsTestUser}
+          >
             テストユーザでログイン
           </Button>
           <Link href="/register">
-            <Button fullWidth variant="outline">
+            <Button disabled={isLoginButtonClicked} fullWidth variant="outline">
               アカウントを新規作成
             </Button>
           </Link>

@@ -18,7 +18,19 @@ interface RegisterParams {
   lastName: string
 }
 
-export const useAuth = () => {
+type UseAuthParams = {
+  onLoginError?: () => void
+  onLogoutError?: () => void
+  onRegisterError?: () => void
+}
+
+type UseAuth = (params?: UseAuthParams) => {
+  login: (params: LoginParams) => void
+  logout: () => void
+  registerAndLogin: (params: RegisterParams) => void
+}
+
+export const useAuth: UseAuth = (params) => {
   const router = useRouter()
 
   const loginMutation = usePostUsersLogin({
@@ -28,19 +40,33 @@ export const useAuth = () => {
         console.log('onsuccess login')
       },
       onError: () => {
+        params?.onLoginError?.()
         alert('ログインに失敗しました')
       },
     },
   })
+
   const logoutMutation = usePostUsersLogout({
     mutation: {
       onSuccess: () => {
         router.push('/login')
         console.log('onsuccess logout')
       },
+      onError: () => {
+        params?.onLogoutError?.()
+        alert('ログアウトに失敗しました')
+      },
     },
   })
-  const registerMutation = usePostUsers()
+
+  const registerMutation = usePostUsers({
+    mutation: {
+      onError: () => {
+        params?.onRegisterError?.()
+        alert('登録に失敗しました')
+      },
+    },
+  })
 
   const login = useCallback(
     ({ email, password }: LoginParams) => {
