@@ -18,7 +18,13 @@ interface RegisterParams {
   lastName: string
 }
 
-export const useAuth = () => {
+type UseAuth = (params?: { onLoginError?: () => void }) => {
+  login: (params: LoginParams) => void
+  logout: () => void
+  registerAndLogin: (params: RegisterParams) => void
+}
+
+export const useAuth: UseAuth = (params) => {
   const router = useRouter()
 
   const loginMutation = usePostUsersLogin({
@@ -28,6 +34,7 @@ export const useAuth = () => {
         console.log('onsuccess login')
       },
       onError: () => {
+        params?.onLoginError?.()
         alert('ログインに失敗しました')
       },
     },
