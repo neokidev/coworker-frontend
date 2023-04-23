@@ -43,8 +43,15 @@ export function Table<TData extends HasIdObject>({
   onDeleteSelection,
   isLoading,
 }: TableProps<TData>) {
+  if (!pageSizeOptions.includes(pageSize)) {
+    throw new Error(
+      `pageSizeOptions (${pageSizeOptions}) must include pageSize (${pageSize}).`
+    )
+  }
+
   return (
     <DataTable
+      minHeight={isLoading || data?.length === 0 ? 300 : undefined}
       withBorder
       borderRadius="sm"
       withColumnBorders
