@@ -1,7 +1,6 @@
 import { Dispatch, FC, SetStateAction, useCallback } from 'react'
 import { Modal, Text, Title } from '@mantine/core'
 import { SubmitHandler } from 'react-hook-form'
-import { v4 as uuidv4 } from 'uuid'
 import { ApiCreateMemberRequest } from '@/api/model'
 import { Camelized } from 'humps'
 import { FormValues, MemberForm } from '@/features/members/MemberForm'
@@ -18,8 +17,7 @@ export const CreateModal: FC<Props> = ({ isOpen, setIsOpen, createMember }) => {
   }, [setIsOpen])
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    const id = uuidv4()
-    createMember({ id, ...data })
+    createMember(data)
     close()
   }
 
