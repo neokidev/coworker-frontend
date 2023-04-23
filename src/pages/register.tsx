@@ -16,8 +16,9 @@ import { PasswordInput, TextInput, useForm } from '@/components/Form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import Link from 'next/link'
+import { useCallback, useState } from 'react'
 
-const minPasswordLength = 14
+const minPasswordLength = 8
 
 const schema = z
   .object({
@@ -27,8 +28,8 @@ const schema = z
       .string()
       .min(1, { message: 'Required' })
       .email({ message: 'Wrong Format' }),
-    password: z.string().min(minPasswordLength, { message: 'Required' }),
-    confirmPassword: z.string().min(minPasswordLength, { message: 'Required' }),
+    password: z.string().min(minPasswordLength),
+    confirmPassword: z.string().min(minPasswordLength),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
@@ -36,7 +37,15 @@ const schema = z
   })
 
 export default function Login() {
-  const { registerAndLogin } = useAuth()
+  const [isRegisterButtonClicked, setIsRegisterButtonClicked] = useState(false)
+
+  const handleRegisterError = useCallback(() => {
+    setIsRegisterButtonClicked(false)
+  }, [])
+
+  const { registerAndLogin } = useAuth({
+    onRegisterError: handleRegisterError,
+  })
 
   const [Form, methods] = useForm<{
     firstName: string
@@ -54,6 +63,7 @@ export default function Login() {
       confirmPassword: '',
     },
     onSubmit: ({ confirmPassword: _, ...data }) => {
+      setIsRegisterButtonClicked(true)
       registerAndLogin(data)
     },
   })
@@ -76,14 +86,18 @@ export default function Login() {
               name="confirmPassword"
               label="パスワード（確認用）"
             />
-            <Form.SubmitButton mt="sm" loading={methods.formState.isSubmitting}>
+            <Form.SubmitButton mt="sm" disabled={isRegisterButtonClicked}>
               {methods.formState.isSubmitting ? '作成中' : '新規作成'}
             </Form.SubmitButton>
           </Stack>
         </Form>
         <Divider my="xl" />
         <Link href="/login">
-          <Button fullWidth variant="outline">
+          <Button
+            disabled={isRegisterButtonClicked}
+            fullWidth
+            variant="outline"
+          >
             ログイン画面に戻る
           </Button>
         </Link>
