@@ -6,7 +6,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { SessionProvider } from '@/providers/session'
 import { getUsersMe } from '@/api/endpoints/users/users'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Session } from '@/types/types'
 import { isAuthRequiredPath } from '@/features/auth'
 
@@ -22,18 +22,31 @@ const queryClient = new QueryClient({
 export default function MyApp({
   Component,
   pageProps,
-  session,
 }: AppProps & { session: Session }) {
   const router = useRouter()
+  const [session, setSession] = useState<Session | undefined>(undefined)
 
   useEffect(() => {
-    if (isAuthRequiredPath(router.pathname) && session.user === undefined) {
-      router.push('/login')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    getUsersMe()
+      .then((response) => {
+        setSession({ user: response.data })
+        if (!isAuthRequiredPath(router.pathname)) {
+          router.push('/')
+        }
+      })
+      .catch(() => {
+        setSession({ user: undefined })
+        if (isAuthRequiredPath(router.pathname)) {
+          router.push('/login')
+        }
+      })
+  }, [router])
 
-  if (isAuthRequiredPath(router.pathname) && session.user === undefined) {
+  if (
+    session === undefined ||
+    (session.user === undefined && isAuthRequiredPath(router.pathname)) ||
+    (session.user !== undefined && !isAuthRequiredPath(router.pathname))
+  ) {
     return null
   }
 
@@ -45,21 +58,4 @@ export default function MyApp({
       </QueryClientProvider>
     </SessionProvider>
   )
-}
-
-MyApp.getInitialProps = async (context: any) => {
-  let session: Session = {}
-
-  if (context.ctx.pathname !== '/login') {
-    try {
-      const response = await getUsersMe({
-        withCredentials: true,
-      })
-      session.user = response.data
-    } catch (error) {}
-  }
-
-  return {
-    session,
-  }
 }
